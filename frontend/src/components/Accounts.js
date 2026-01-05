@@ -1,3 +1,13 @@
+/**
+ * This is a legacy component for displaying user accounts.
+ * This is not currently in use, but may be repurposed in the future.
+ * 
+ * @deprecated
+ * Component from Material-UI's testimonial example.
+ * 
+ * 
+ */
+
 import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';

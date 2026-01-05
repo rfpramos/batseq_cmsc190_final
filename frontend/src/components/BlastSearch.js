@@ -1,3 +1,13 @@
+/**
+ * BlastSearch.js
+ * A React component for performing BLAST searches on 16S rRNA sequences.
+ * Users can input a sequence in FASTA format, submit it to the backend,
+ * and view the search results in a table or text format.
+ * 
+ * Editted by Ramnick Francis P. Ramos
+ * 05/01/2026 4:30PM
+ */
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Container, Typography } from '@mui/material';
