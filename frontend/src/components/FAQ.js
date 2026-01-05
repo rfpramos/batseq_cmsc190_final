@@ -1,3 +1,29 @@
+/**
+ * @deprecated
+ * LEGACY MATERIAL UI COMPONENT
+ *
+ * Status: Unused / Deprecated
+ *
+ * This file is part of the legacy Material UI implementation.
+ * It is currently not imported or used anywhere in the project.
+ *
+ * Reason for retention:
+ * - Backward compatibility
+ * - For future reference on scaling the project
+ * - Pending cleanup or refactor
+ *
+ * -------------------------------------------------------------------
+ * Comment authored by:
+ * Ramnick Francis P. Ramos
+ * CINTERLABS Cohort 2024–2025
+ * Student Number: 2021-00571
+ * Date: 18/12/2025
+ * -------------------------------------------------------------------
+ */
+
+
+
+
 import * as React from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -5,9 +31,6 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
-
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function FAQ() {
   const [expanded, setExpanded] = React.useState(false);

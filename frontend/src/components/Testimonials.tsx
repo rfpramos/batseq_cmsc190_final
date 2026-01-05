@@ -1,3 +1,27 @@
+/**
+ * @deprecated
+ * LEGACY MATERIAL UI COMPONENT
+ *
+ * Status: Unused / Deprecated
+ *
+ * This file is part of the legacy Material UI implementation.
+ * It is currently not imported or used anywhere in the project.
+ *
+ * Reason for retention:
+ * - Backward compatibility
+ * - For future reference on scaling the project
+ * - Pending cleanup or refactor
+ *
+ * -------------------------------------------------------------------
+ * Comment authored by:
+ * Ramnick Francis P. Ramos
+ * CINTERLABS Cohort 2024–2025
+ * Student Number: 2021-00571
+ * Date: 18/12/2025
+ * -------------------------------------------------------------------
+ */
+
+
 import * as React from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
