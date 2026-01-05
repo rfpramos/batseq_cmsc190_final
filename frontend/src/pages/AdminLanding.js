@@ -1,3 +1,12 @@
+/**
+ * AdminLanding.js
+ * 
+ * This is the landing page for the admin section of the BatSEQ application.
+ * It includes various components such as account management, dashboard,
+ * and other admin-specific features.
+*/
+
+
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
