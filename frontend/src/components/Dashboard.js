@@ -5,14 +5,14 @@
  * It displays a list of bacterial isolates derived from bat fecal pellets,
  * allowing users to view, add, edit, delete, and share isolate information.
  * It also integrates sequence visualization using SeqViz.
+ * 
+ * THIS CONTAINS THE BRUNT OF THE CODE
  */
 
 
 import React, { useState, useEffect } from "react";
 import { SeqViz } from "seqviz";
 
-
-import PhyloTree from "./PhyloTree.js"; // or "./PhyloTree" 
 
 
 import {
@@ -57,6 +57,8 @@ import DeleteIcon from "@mui/icons-material/Delete"; // Corrected import path
 export default function Dashboard() {
   const [dataset, setDataset] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
+
+  // New isolate state
   const [newIsolate, setNewIsolate] = useState({
     isolate_code: "",
     type_of_sample: "",
@@ -359,6 +361,8 @@ export default function Dashboard() {
     setEmailAddressRecepient(event.target.value);
   };
 
+  // @deprecated 
+  
   // Assuming `sharedDataset` is a prop, watch for its changes
   useEffect(() => {
     // Logic to determine if sharedDataset has changed

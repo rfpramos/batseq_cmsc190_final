@@ -1,3 +1,11 @@
+
+/**
+ * DeveloperMode.js
+ * 
+ * This was made for the developer's backdoor access to the admin panel.
+ * It allows quick navigation to the admin section without going through
+ * the regular login process.
+ */
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";

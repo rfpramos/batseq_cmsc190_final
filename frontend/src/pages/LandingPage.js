@@ -1,3 +1,20 @@
+/**
+ * This houses the dashboard landing page for BatSEQ.
+ * It includes components such as the BlastSearch and Dashboard.
+ * 
+ * This contains legacy code from the original landing component  from Material UI.
+ * 
+ * -------------------------------------------------------------------
+ * Comment authored by:
+ * Ramnick Francis P. Ramos
+ * CINTERLABS Cohort 2024–2025
+ * Student Number: 2021-00571
+ * Date: 05/01/2026
+ * 
+ * -------------------------------------------------------------------
+ */
+
+
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
@@ -9,13 +26,13 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import AppAppBar from '../components/AppAppBar';
-import Hero from '../components/Hero';
-import LogoCollection from '../components/LogoCollection';
-import Highlights from '../components/Highlights';
-import Pricing from '../components/Pricing';
-import Features from '../components/Features';
+// import Hero from '../components/Hero';
+// import LogoCollection from '../components/LogoCollection';
+// import Highlights from '../components/Highlights';
+// import Pricing from '../components/Pricing';
+// import Features from '../components/Features';
 import Testimonials from '../components/Accounts';
-import FAQ from '../components/FAQ';
+// import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
 import getLPTheme from '../getLPTheme';
 

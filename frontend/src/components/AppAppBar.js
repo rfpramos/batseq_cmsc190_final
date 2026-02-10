@@ -1,3 +1,9 @@
+/**
+ * AppAppBar.js
+ * The top app bar component for the BatSEQ application.
+ * It includes navigation links, a theme toggle, and a logout button.
+ */
+
 import * as React from "react";
 import PropTypes from "prop-types";
 
@@ -50,6 +56,9 @@ function AppAppBar({ mode, toggleColorMode }) {
     }
   };
 
+  /*
+  The phyloOpen state is used to control the visibility of the in-app popup/modal for the phylogenetic tree.
+  */
   const [phyloOpen, setPhyloOpen] = React.useState(false);
 
   return (
