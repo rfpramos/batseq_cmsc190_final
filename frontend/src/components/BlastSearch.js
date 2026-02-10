@@ -40,6 +40,9 @@ const BlastSearch = () => {
     return '';
   })();
 
+  // The results returned by the server can be in various formats (string, array of objects, or an object with rows/columns).
+  //But we check if it's an array of objects to extract headers for table rendering. If not, we won't show the table headers.
+  // REASON: BIO 191 learning about options on returned values
   const isArrayResults = Array.isArray(results);
   const resultHeaders = isArrayResults && results.length > 0 ? Object.keys(results[0]) : [];
 
@@ -66,6 +69,7 @@ const BlastSearch = () => {
           res = parsed;
         } catch (parseErr) {
           // keep as plain string if not JSON
+          //COULD BE JSON
         }
       }
 

@@ -1,3 +1,26 @@
+/**
+ * @deprecated
+ * INITIAL PLAN OF MAKING A SEPARATE PAGE FOR BLAST
+ *
+ * Status: Discontinued / Deprecated
+ * 
+ * This file was part of an initial plan to create a separate page, but it was decided
+ * that the BLAST will be made as a component within the Dashboard instead.
+ * 
+ * Reason for retention:
+ * - Backward compatibility
+ * - For future reference on scaling the project
+ * - Pending cleanup or refactor
+ *
+ * -------------------------------------------------------------------
+ * Comment authored by:
+ * Ramnick Francis P. Ramos
+ * CINTERLABS Cohort 2024–2025
+ * Student Number: 2021-00571
+ * Date: 18/12/2025
+ * -------------------------------------------------------------------
+ */
+
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
