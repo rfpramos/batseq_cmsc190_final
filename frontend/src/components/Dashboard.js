@@ -343,7 +343,8 @@ export default function Dashboard() {
     // console.log(isolate_code_to_share); // Use the state value as needed
     // console.log(emailAddressRecepient); // Use the state value as needed
 
-    
+    /* LEGACY COMPONENT, not used anymore as requested by Sir Montecillo
+    */
     const newShareTo = {
       email: emailAddressRecepient,
       isolate_code: isolate_code_to_share,
