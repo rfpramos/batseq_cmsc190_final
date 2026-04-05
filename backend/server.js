@@ -2,7 +2,11 @@ const express = require('express');
 const dotenv = require('dotenv');
 const dataRoutes = require('./routes/dataRoutes');
 
+// server.js
 const cors = require('cors');
+
+// Allow CORS requests from your GitHub Pages domain
+app.use(cors({ origin: 'https://rfpramos.github.io' }));
 
 
 dotenv.config();
