@@ -9,7 +9,7 @@ const cors = require('cors');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Allow requests from your frontend and local development.
 app.use(cors({
