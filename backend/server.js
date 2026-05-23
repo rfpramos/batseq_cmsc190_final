@@ -11,9 +11,30 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  process.env.FRONTEND_ORIGIN,
+  'https://rfpramos.github.io',
+  /^https:\/\/.*\.vercel\.app$/,
+].filter(Boolean);
+
 // Allow requests from your frontend and local development.
 app.use(cors({
-  origin: ['https://rfpramos.github.io', 'http://localhost:3000'],
+  origin: (origin, callback) => {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+
+    const isAllowed = allowedOrigins.some((allowedOrigin) => {
+      if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+
+      return allowedOrigin === origin;
+    });
+
+    callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
 }));
 app.use(express.json());
 
