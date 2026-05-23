@@ -2,10 +2,9 @@ FROM node:18-slim AS build
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-RUN npm install
-
 COPY . .
+RUN test -f package.json
+RUN npm install
 RUN npm run build
 
 FROM nginx:1.27-alpine
