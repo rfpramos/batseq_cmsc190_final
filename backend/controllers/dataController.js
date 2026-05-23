@@ -319,7 +319,18 @@ exports.getAllData = (req, res) => {
   connection.query(query, (err, results) => {
     if (err) {
       console.error('Error fetching data:', err);
-      res.status(500).json({ error: 'Failed to fetch data' });
+      const isDebug = req.query && (req.query.debug === '1' || req.query.debug === 'true');
+      res.status(500).json({
+        error: 'Failed to fetch data',
+        ...(isDebug
+          ? {
+              code: err.code,
+              errno: err.errno,
+              sqlState: err.sqlState,
+              sqlMessage: err.sqlMessage,
+            }
+          : {}),
+      });
       return;
     }
     // console.log('Fetched data:', results);
