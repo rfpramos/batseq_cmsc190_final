@@ -19,6 +19,7 @@ import bg from "../assets/images/bg-gradient.png";
 import BuildIcon from "@mui/icons-material/Build";
 
 import { brand } from "../getLPTheme";
+import API_BASE from '../config';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -162,7 +163,7 @@ export default function SignIn() {
                       alert("Please fill all fields");
                       return;
                     }
-                    fetch('http://localhost:5000/api/signup', {
+                    fetch(`${API_BASE}/api/signup`, {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json'
