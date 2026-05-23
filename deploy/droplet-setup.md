@@ -16,10 +16,11 @@ docker run -d --name batseq-backend --restart unless-stopped --network host \
 ## Frontend
 
 ```bash
-cd ~/batseq_cmsc190_final
-docker build -t batseq-frontend ./frontend
-docker rm -f batseq-frontend 2>/dev/null || true
-docker run -d --name batseq-frontend --restart unless-stopped --network host batseq-frontend
+cd ~/batseq_cmsc190_final/frontend
+npm install
+npm run build
+sudo mkdir -p /var/www/batseq/frontend
+sudo rsync -a --delete build/ /var/www/batseq/frontend/build/
 ```
 
 ## nginx
