@@ -10,6 +10,7 @@
 
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE from '../config';
 import { Container, Typography } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import FormGroup from '@mui/material/FormGroup';
@@ -55,7 +56,7 @@ const BlastSearch = () => {
     setResults(null);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/blastn', { sequence });
+      const response = await axios.post(`${API_BASE}/api/blastn`, { sequence });
       console.log("BLAST Response:", response.data);
 
       // Normalize response:
