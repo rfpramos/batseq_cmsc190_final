@@ -13,7 +13,6 @@ import Grid from '@mui/material/Grid';
 import { useTheme } from '@mui/system';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import API_BASE from '../config';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Block';
 import IconButton from '@mui/material/IconButton';
@@ -31,7 +30,7 @@ export default function Testimonials() {
 
 
   const restrictUser = (email) => {
-    axios.post(`${API_BASE}/api/data/restrictUser`, { email })
+    axios.post('http://localhost:5000/api/data/restrictUser', { email })
       .then(response => {
         console.log(response.data.message);
         // Optionally, update the users state to reflect the change
@@ -44,7 +43,7 @@ export default function Testimonials() {
 
 
   const approveUser = (email) => {
-    axios.post(`${API_BASE}/api/data/approveUser`, { email })
+    axios.post('http://localhost:5000/api/data/approveUser', { email })
 
       .then(response => {
         console.log(response.data.message);
@@ -61,7 +60,7 @@ const [users, setUsers] = useState([]);
 
 useEffect(() => {
   axios
-    .get(`${API_BASE}/api/data/getuser`)
+    .get("http://localhost:5000/api/data/getuser")
     .then((response) => {
       setUsers(response.data);
 

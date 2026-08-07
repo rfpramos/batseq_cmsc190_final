@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const dotenv = require('dotenv');
 const dataRoutes = require('./routes/dataRoutes');
@@ -6,30 +5,22 @@ const dataRoutes = require('./routes/dataRoutes');
 // server.js
 const cors = require('cors');
 
+// Allow CORS requests from your GitHub Pages domain
+app.use(cors({ origin: 'https://rfpramos.github.io' }));
+
+
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Allow requests from your frontend and local development.
-app.use(cors({
-  origin: ['https://rfpramos.github.io', 'http://localhost:3000'],
-}));
+app.use(cors());
 app.use(express.json());
 
 // Simple request logger for debugging
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
   next();
-});
-
-// Fast health check route that does not touch the database.
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    ok: true,
-    service: 'backend',
-    timestamp: new Date().toISOString(),
-  });
 });
 
 app.use('/api', dataRoutes);
@@ -40,12 +31,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error', details: err && err.message ? err.message : String(err) });
 });
 
-// Local development only; Vercel serverless must not call app.listen().
-if (require.main === module) {
-  const HOST = process.env.HOST || '0.0.0.0';
-  app.listen(PORT, HOST, () => {
-    console.log(`Server is running on http://${HOST}:${PORT}`);
-  });
-}
-
-module.exports = app;
+app.listen(PORT, '127.0.0.1', () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
+});

@@ -27,7 +27,6 @@ import bg from "../assets/images/bg-gradient.png";
 import PersonIcon from "@mui/icons-material/Person";
 
 import { brand } from "../getLPTheme";
-import API_BASE from '../config';
 import { useNavigate } from "react-router-dom";
 
 // function Copyright(props) {
@@ -142,7 +141,7 @@ export default function SignIn() {
                
                 
                   try {
-                    const response = await fetch(`${API_BASE}/api/auth/admin`, {
+                    const response = await fetch('http://localhost:5000/api/auth/admin', {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
