@@ -1,26 +1,12 @@
 /**
+ * This is a legacy component for displaying user accounts.
+ * This is not currently in use, but may be repurposed in the future.
+ * 
  * @deprecated
- * LEGACY MATERIAL UI COMPONENT
- *
- * Status: Unused / Deprecated
- *
- * This file is part of the legacy Material UI implementation.
- * It is currently not imported or used anywhere in the project.
- *
- * Reason for retention:
- * - Backward compatibility
- * - For future reference on scaling the project
- * - Pending cleanup or refactor
- *
- * -------------------------------------------------------------------
- * Comment authored by:
- * Ramnick Francis P. Ramos
- * CINTERLABS Cohort 2024–2025
- * Student Number: 2021-00571
- * Date: 18/12/2025
- * -------------------------------------------------------------------
+ * Component from Material-UI's testimonial example.
+ * 
+ * 
  */
-
 
 import * as React from 'react';
 import Card from '@mui/material/Card';
@@ -42,11 +28,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
 import { Icon } from '@mui/material';
 
-/*TESTIMONIALS COMPONENT
-This component is used to display the users of the application and allow the admin to approve or restrict users. 
-
-Based off of Material UI Testimonal Component: https://mui.com/material-ui/
-*/
 export default function Testimonials() {
 
 
@@ -130,8 +111,6 @@ useEffect(() => {
               }}
             >
 {/* 
-
-This is how the users table is shown in the MySQL CLI:
 // +------------+----------------------+------+-----+---------------------+-------------------------------+
 // | Field      | Type                 | Null | Key | Default             | Extra                         |
 // +------------+----------------------+------+-----+---------------------+-------------------------------+
