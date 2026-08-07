@@ -6,18 +6,12 @@
  * allowing users to view, add, edit, delete, and share isolate information.
  * It also integrates sequence visualization using SeqViz.
  * 
- * THIS CONTAINS THE BRUNT OF THE CODE.
- * 
- * Legacy Codes are commented out and marked as @deprecated, but are still present in the codebase for reference and potential future use.
- *
- * Editted by Ramnick Francis P. Ramos
- * 10/02/2026 4:30PM
- * 
- **/
+ * THIS CONTAINS THE BRUNT OF THE CODE
+ */
 
 
 import React, { useState, useEffect } from "react";
-import { SeqViz } from "seqviz"; // The dashboard will contain the SeqViz component for sequence visualization
+import { SeqViz } from "seqviz";
 
 
 
@@ -65,7 +59,6 @@ export default function Dashboard() {
   const [openAdd, setOpenAdd] = useState(false);
 
   // New isolate state
-  //Contains all the fields needed to add a new isolate, including the gene sequence and image URL.
   const [newIsolate, setNewIsolate] = useState({
     isolate_code: "",
     type_of_sample: "",
@@ -79,8 +72,8 @@ export default function Dashboard() {
     antibiotic_resitance_profile: "",
     identity: "",
     pathogenicity: "",
-    gene_seq: "", // This field will hold the gene sequence extracted from the uploaded FASTA file.
-    image_url: "", //Connected to cloudinary
+    gene_seq: "",
+    image_url: "",
   });
 
   const [fileName, setFileName] = useState("");
@@ -343,7 +336,6 @@ export default function Dashboard() {
     // console.log(isolate_code_to_share); // Use the state value as needed
     // console.log(emailAddressRecepient); // Use the state value as needed
 
-    
     const newShareTo = {
       email: emailAddressRecepient,
       isolate_code: isolate_code_to_share,
