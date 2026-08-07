@@ -1,7 +1,7 @@
 
 ![Logo](frontend/src/assets/images/logo.png)
 # BatSEQ
-![Poster](/presentation/RAMOS_SCIENTIFIC_POSTER_image.png)
+![Poster](folder/presentation/RAMOS_SCIENTIFIC_POSTER_image.png)
 
 
 ## Overview of the Project
