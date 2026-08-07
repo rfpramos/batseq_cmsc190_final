@@ -1,18 +1,8 @@
-/**
- * Dashboard.js
- * 
- * This is the main dashboard component for the BatSEQ.
- * It displays a list of bacterial isolates derived from bat fecal pellets,
- * allowing users to view, add, edit, delete, and share isolate information.
- * It also integrates sequence visualization using SeqViz.
- */
-
-
 import React, { useState, useEffect } from "react";
 import { SeqViz } from "seqviz";
 
 
-import PhyloTree from "./PhyloTree.js"; // or "./PhyloTree" 
+import PhyloTree from "./PhyloTree.js"; // or "./PhyloTree" — match your actual file name
 
 
 import {
