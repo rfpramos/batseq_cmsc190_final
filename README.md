@@ -30,11 +30,12 @@ Use the databse in the Backend for setting up
 This project can run with both the frontend and backend on the same DigitalOcean Droplet.
 
 1. Build and run the backend container on port 5000.
-2. Build the frontend on the Droplet and copy `frontend/build` to `/var/www/batseq/frontend/build`.
+2. Build and run the frontend container on port 80.
 3. Serve the React build from nginx.
 4. Proxy `/api` to the backend at `http://127.0.0.1:5000`.
 
 See [deploy/droplet-nginx.conf](deploy/droplet-nginx.conf) for a ready-to-use nginx config.
+See [frontend/Dockerfile](frontend/Dockerfile) for the containerized frontend build.
 
 
 
