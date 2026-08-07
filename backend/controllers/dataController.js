@@ -28,9 +28,7 @@ const fs = require('fs'); // file system module for reading and writing files
 const { exec } = require('child_process'); // exec function to execute shell commands
 const path = require('path'); // path module for handling file paths
 
-
-// How the Database is shown in the MySQL CLI:
-// MySQL [cinterlabs]> desc users;
+// MariaDB [cinterlabs]> desc users;
 // +------------+----------------------+------+-----+---------------------+-------------------------------+
 // | Field      | Type                 | Null | Key | Default             | Extra                         |
 // +------------+----------------------+------+-----+---------------------+-------------------------------+

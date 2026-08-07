@@ -20,6 +20,15 @@ const logoStyle = {
   height: 'auto',
 };
 
+// function Copyright() {
+//   return (
+//     <Typography variant="body2" color="text.secondary" mt={1}>
+//       {'Copyright © '}
+//       <Link href="https://mui.com/">Sitemark&nbsp;</Link>
+//       {new Date().getFullYear()}
+//     </Typography>
+//   );
+// }
 
 export default function Footer() {
   return (
