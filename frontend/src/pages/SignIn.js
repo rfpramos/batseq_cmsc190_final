@@ -5,20 +5,14 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link"; 
+import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import logo from "../assets/images/logo.png"; // Adjust the path as necessary
-
-import DeveloperIcon from "@mui/icons-material/DeveloperMode";
 
 import bg from "../assets/images/bg-gradient.png";
 
@@ -46,30 +40,6 @@ const defaultTheme = createTheme({
 export default function SignIn() {
 
   const navigate = useNavigate();
-
-  const [testerPassword, setTesterPassword] = React.useState("");
-  const [testerError, setTesterError] = React.useState("");
-  const [testerDialogOpen, setTesterDialogOpen] = React.useState(false);
-
-  const handleTesterSignIn = () => {
-    const configuredTesterPassword = process.env.REACT_APP_TESTER_PASSWORD || "useruser";
-
-    if (!testerPassword.trim()) {
-      setTesterError("Tester password is required.");
-      return;
-    }
-
-    if (testerPassword !== configuredTesterPassword) {
-      setTesterError("Invalid tester password.");
-      return;
-    }
-
-    localStorage.setItem("userLoggedIn", "true");
-    localStorage.removeItem("isAdmin");
-    localStorage.setItem("email", "tester@up.edu.ph");
-    setTesterDialogOpen(false);
-    navigate("/home");
-  };
 
  
 
@@ -219,66 +189,7 @@ export default function SignIn() {
                 onClick={() =>  navigate('/developer')}
               > Sign in as Administrator</Button>
               </Grid>
-
-              <Grid item>
-            <Button
-                // variant="contained"
-                color="secondary"
-                startIcon={<DeveloperIcon />}
-                onClick={() =>
-                {
-                  setTesterPassword("");
-                  setTesterError("");
-                  setTesterDialogOpen(true);
-
-
-                }}              > Sign in as Tester</Button>
               </Grid>
-              </Grid>
-
-              <Dialog
-                open={testerDialogOpen}
-                onClose={() => setTesterDialogOpen(false)}
-                fullWidth
-                maxWidth="xs"
-              >
-                <DialogTitle>Tester Access</DialogTitle>
-                <DialogContent>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    label="Tester Password"
-                    type="password"
-                    fullWidth
-                    value={testerPassword}
-                    onChange={(event) => {
-                      setTesterPassword(event.target.value);
-                      if (testerError) {
-                        setTesterError("");
-                      }
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        event.preventDefault();
-                        handleTesterSignIn();
-                      }
-                    }}
-                  />
-                  {testerError && (
-                    <Typography color="error" variant="body2" sx={{ mt: 1 }}>
-                      {testerError}
-                    </Typography>
-                  )}
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setTesterDialogOpen(false)}>Cancel</Button>
-                  <Button onClick={handleTesterSignIn} variant="contained">
-                    Continue
-                  </Button>
-                </DialogActions>
-              </Dialog>
-
-              
             </Box>
 
             
