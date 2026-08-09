@@ -268,7 +268,7 @@ export default function getLPTheme(mode: PaletteMode): ThemeOptions {
       },
       MuiToggleButton: {
         styleOverrides: {
-          root: ({ theme }) => ({
+          root: ({ theme }: any) => ({
             padding: '12px 16px',
             textTransform: 'none',
             borderRadius: '10px',

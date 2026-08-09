@@ -1,0 +1,13 @@
+(B4I1|Rousettus amplexicaudatus|Cavinti Underground River and Cave Complex Cavinti Laguna:0.000000,
+ B5I1|Hipposideros diadema|Cavinti Underground River and Cave Complex Cavinti Laguna:0.000000,
+ (B6I1|Miniopterus schreibersii|Cavinti Underground River and Cave Complex Cavinti Laguna:0.000000,
+   (B7I1|Cynopterus brachyotis|Cavinti Underground River and Cave Complex Cavinti Laguna:0.219309,
+     (B2I2|Rhinolophus arcuatus|Cavinti Underground River and Cave Complex Cavinti Laguna:0.372226,
+       (B2I1|Rhinolophus arcuatus|Cavinti Underground River and Cave Complex Cavinti Laguna:0.388993,
+         (B1I1|Rhinolophus rufus|Cavinti Underground River and Cave Complex Cavinti Laguna:0.368327,
+          B3I1|Ptenochirus jagori|Cavinti Underground River and Cave Complex Cavinti Laguna:0.373609
+         ):0.006481
+       ):0.000921
+     ):0.146557
+   ):0.205570
+ ):0.000000);
