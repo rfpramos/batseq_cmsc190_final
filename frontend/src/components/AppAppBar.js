@@ -14,8 +14,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ToggleColorMode from "./ToggleColorMode";
 import {useNavigate} from "react-router-dom";
 
-import PhyloTree from "./PhyloTree";
-
 //importing the logo
 import logo from "../assets/images/logo.png"; // Adjust the path as necessary
 import { IconButton } from "@mui/material";
@@ -49,8 +47,6 @@ function AppAppBar({ mode, toggleColorMode }) {
       setOpen(false);
     }
   };
-
-  const [phyloOpen, setPhyloOpen] = React.useState(false);
 
   return (
     <div>
@@ -109,16 +105,6 @@ function AppAppBar({ mode, toggleColorMode }) {
                   </Typography>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => scrollToSection("about")}
-                  sx={{ py: "6px", px: "12px" }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    About
-                  </Typography>
-                </MenuItem>
-
-
-                <MenuItem
                   onClick={() => scrollToSection("blaster")}
                   sx={{ py: "6px", px: "12px" }}
                 >
@@ -126,20 +112,6 @@ function AppAppBar({ mode, toggleColorMode }) {
                     BLAST
                   </Typography>
                 </MenuItem>
-
-                
-<MenuItem
-  onClick={() => {
-    // open an in-app popup/modal instead of a new browser window
-    setPhyloOpen(true);
-  }}
-  sx={{ py: "6px", px: "12px" }}
->
-  <Typography variant="body2" color="text.primary">
-    View Phylogenetic Tree
-  </Typography>
-</MenuItem>
-
 
               </Box>
             </Box>
@@ -197,6 +169,9 @@ function AppAppBar({ mode, toggleColorMode }) {
                   <MenuItem onClick={() => scrollToSection("dashboard")}>
                     Dashboard
                   </MenuItem>
+                  <MenuItem onClick={() => scrollToSection("blaster")}>
+                    BLAST
+                  </MenuItem>
                   <Divider />
                   <MenuItem>
                     <Button
@@ -218,50 +193,6 @@ function AppAppBar({ mode, toggleColorMode }) {
         </Container>
       </AppBar>
 
-      {/* In-app popup overlay for PhyloTree */}
-      {phyloOpen && (
-        <Box
-          onClick={() => setPhyloOpen(false)}
-          sx={{
-            position: "fixed",
-            inset: 0,
-            zIndex: (theme) => theme.zIndex.modal + 2,
-            bgcolor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 2,
-            // allow the overlay to scroll if inner content is taller than viewport
-            overflowY: "auto",
-          }}
-        >
-          <Box
-            onClick={(e) => e.stopPropagation()}
-            sx={{
-              width: "min(1100px, 96vw)",
-              // use maxHeight constrained by viewport and padding, and enable internal scroll
-              maxHeight: "calc(92vh - 32px)",
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              boxShadow: 24,
-              p: 2,
-              display: "flex",
-              flexDirection: "column",
-              // ensure inner content can scroll
-              overflow: "hidden",
-            }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button size="small" onClick={() => setPhyloOpen(false)}>
-                Close
-              </Button>
-            </Box>
-            <Box sx={{ flex: 1, overflowY: "auto", mt: 1 }}>
-              <PhyloTree />
-            </Box>
-          </Box>
-        </Box>
-      )}
     </div>
   );
 }

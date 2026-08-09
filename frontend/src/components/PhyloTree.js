@@ -164,7 +164,7 @@ export default function PhyloTree() {
   }, []);
 
 return (
-    <div>
+    <div className="w-full max-w-3xl mx-auto">
         <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-green-400">
             Phylogenetic Tree
         </h2>

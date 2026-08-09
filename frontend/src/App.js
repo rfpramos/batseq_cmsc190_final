@@ -27,6 +27,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<SignIn />} />
         <Route path="/home" element={<LandingPage />} />
+        <Route path="/demo" element={<LandingPage />} />
         <Route path="/developer" element={<DeveloperMode />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin" element={<AdminLanding />} />
