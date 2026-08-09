@@ -39,6 +39,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { gray } from "../getLPTheme";
 
 import InfoIcon from "@mui/icons-material/Info";
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 import ShareIcon from "@mui/icons-material/Share";
 
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -78,7 +80,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/data")
+      .get(`${API_BASE_URL}/api/data`)
       .then((response) => {
         setDataset(response.data);
       })
@@ -88,7 +90,7 @@ export default function Dashboard() {
   const fetchSharedData = async (email) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/data/shared",
+        `${API_BASE_URL}/api/data/shared`,
         {
           params: {
             email: email,
@@ -221,7 +223,7 @@ export default function Dashboard() {
 
   const handleAddSubmit = () => {
     axios
-      .post("http://localhost:5000/api/data", newIsolate)
+      .post(`${API_BASE_URL}/api/data`, newIsolate)
       .then((response) => {
         setDataset([...dataset, response.data]);
 
@@ -234,7 +236,7 @@ export default function Dashboard() {
     const newShareTo = { email: email, isolate_code: isolate_code };
     // console.log("newShareTo:", newShareTo);
     axios
-      .post("http://localhost:5000/api/data/shareto", newShareTo)
+      .post(`${API_BASE_URL}/api/data/shareto`, newShareTo)
       .catch((error) => {
         if (error.response) {
           console.error("Error response:", error.response);
@@ -248,7 +250,7 @@ export default function Dashboard() {
 
   const handleDelete = (isolate_code) => {
     axios
-      .delete(`http://localhost:5000/api/data/${isolate_code}`)
+      .delete(`${API_BASE_URL}/api/data/${isolate_code}`)
       .then((response) => {
         const updatedDataset = dataset.filter(
           (item) => item.isolate_code !== isolate_code
@@ -276,7 +278,7 @@ export default function Dashboard() {
   const handleEditSubmit = () => {
     axios
       .put(
-        `http://localhost:5000/api/data/${editIsolate.isolate_code}`,
+        `${API_BASE_URL}/api/data/${editIsolate.isolate_code}`,
         editIsolate
       )
       .then((response) => {
@@ -330,7 +332,7 @@ export default function Dashboard() {
     };
 
     axios
-      .post("http://localhost:5000/api/data/shareto", newShareTo)
+      .post(`${API_BASE_URL}/api/data/shareto`, newShareTo)
       .catch((error) => {
         if (error.response) {
           console.error("Error response:", error.response);

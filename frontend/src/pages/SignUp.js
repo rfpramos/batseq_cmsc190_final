@@ -21,6 +21,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import { brand } from "../getLPTheme";
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 // function Copyright(props) {
 //   return (
@@ -162,7 +163,7 @@ export default function SignIn() {
                       alert("Please fill all fields");
                       return;
                     }
-                    fetch('http://localhost:5000/api/signup', {
+                    fetch(`${API_BASE_URL}/api/signup`, {
                       method: 'POST',
                       headers: {
                         'Content-Type': 'application/json'
