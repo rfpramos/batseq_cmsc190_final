@@ -460,93 +460,299 @@ exports.editDataByIsolateCode = (req, res) => {
 }
 
 
-/** * Performs a BLASTN search using the provided sequence.
- * * @function blastn
+
+/**
+ * Performs a BLASTN search using the provided sequence.
+ *
+ * @function blastn
  * @param {Object} req - Express request object containing the sequence in req.body.
  * @param {string} req.body.sequence - The nucleotide sequence to search.
  * @param {Object} res - Express response object used to send the result.
- * * @returns {void} Responds with the BLASTN results on success, or an error message on failure.
- * * @note This method writes the sequence to a temporary FASTA file, executes the BLASTN command,
- * and returns the results.
- * 
- * @todo Return a frontend-ready JSON object with the BLASTN results.
+ *
+ * @returns {void} Responds with the BLASTN results on success,
+ * or an error message on failure.
  */
+
 exports.blastn = (req, res) => {
   const sequence = req.body.sequence;
 
   if (!sequence || sequence.trim() === '') {
-    return res.status(400).json({ error: 'Sequence is required and cannot be empty' });
+    return res.status(400).json({
+      error: 'Sequence is required and cannot be empty',
+    });
   }
 
   const tempFastaFile = path.join(__dirname, 'temp_sequence.fa');
-  const dbFilePath = path.join(__dirname, 'data', 'mybatdb'); // Path to the BLAST database
+  const dbFilePath = path.join(__dirname, 'data', 'mybatdb');
 
-  // Ensure BLAST DB files exist
+  // ---------------------------------------------------------
+  // Ensure BLAST database files exist
+  // ---------------------------------------------------------
+
   const requiredFiles = ['.nhr', '.nin', '.nsq'];
+
   for (const ext of requiredFiles) {
     if (!fs.existsSync(`${dbFilePath}${ext}`)) {
-      return res.status(500).json({ error: `Database file ${dbFilePath}${ext} is missing.` });
+      return res.status(500).json({
+        error: `Database file ${dbFilePath}${ext} is missing.`,
+      });
     }
   }
 
-  // Prepare FASTA: add header if not provided
-  const fastaContent = sequence.trim().startsWith('>') ? sequence.trim() : `>query\n${sequence.trim()}\n`;
+  // ---------------------------------------------------------
+  // Prepare FASTA input
+  // ---------------------------------------------------------
+
+  const fastaContent = sequence.trim().startsWith('>')
+    ? sequence.trim()
+    : `>query\n${sequence.trim()}\n`;
 
   try {
     fs.writeFileSync(tempFastaFile, fastaContent, 'utf8');
   } catch (writeErr) {
-    console.error('Error writing temp FASTA file:', writeErr);
-    return res.status(500).json({ error: 'Failed to write temporary FASTA file' });
+    console.error('Error writing temporary FASTA file:', writeErr);
+
+    return res.status(500).json({
+      error: 'Failed to write temporary FASTA file',
+    });
   }
 
-  // Use tabular outfmt for easy parsing
-  const outfmtFields = 'qseqid stitle  pident length mismatch gapopen qstart qend sstart send evalue bitscore';
-  const command = `blastn -query "${tempFastaFile}" -db "${dbFilePath}" -outfmt "6 ${outfmtFields}"`;
+  // ---------------------------------------------------------
+  // BLAST output fields
+  // ---------------------------------------------------------
 
-  exec(command, { maxBuffer: 10 * 1024 * 1024 }, (error, stdout, stderr) => {
-    // Clean up temp file
-    try {
-      if (fs.existsSync(tempFastaFile)) fs.unlinkSync(tempFastaFile);
-    } catch (cleanupErr) {
-      console.warn('Failed to remove temp FASTA file:', cleanupErr);
-    }
+  /*
+   * qseqid    = Query sequence ID
+   * stitle    = Subject/matched sequence title
+   * pident    = Percentage of identical matches
+   * length    = Alignment length
+   * mismatch  = Number of mismatches
+   * gapopen   = Number of gap openings
+   * evalue    = Expect value
+   * bitscore  = Bit score
+   *
+   * qstart/qend/sstart/send are omitted because they are
+   * not needed for the main results table.
+   */
 
-    if (error) {
-      console.error('Error executing blastn:', error);
-      return res.status(500).json({ error: error.message || 'BLAST execution failed' });
-    }
-    if (stderr) {
-      // BLAST writes warnings to stderr sometimes; don't always treat as fatal.
-      console.warn('BLAST stderr:', stderr);
-    }
+  const outfmtFields =
+    'qseqid stitle pident length mismatch gapopen evalue bitscore';
 
-    // Parse tabular output into JSON table
-    const columns = outfmtFields.split(' ');
-    const rows = stdout
-      .trim()
-      .split('\n')
-      .filter(line => line.trim() !== '')
-      .map(line => {
-        const parts = line.split('\t');
-        const obj = {};
-        for (let i = 0; i < columns.length; i++) {
-          // convert numeric-looking fields to numbers where appropriate
-          const colName = columns[i];
-          const val = parts[i] === undefined ? null : parts[i];
-          if (val === null) {
-            obj[colName] = null;
-          } else if (['pident', 'length', 'mismatch', 'gapopen', 'qstart', 'qend', 'sstart', 'send'].includes(colName)) {
-            obj[colName] = Number(val);
-          } else if (['evalue', 'bitscore'].includes(colName)) {
-            obj[colName] = Number(val);
-          } else {
-            obj[colName] = val;
-          }
+  const command =
+    `blastn -query "${tempFastaFile}" ` +
+    `-db "${dbFilePath}" ` +
+    `-outfmt "6 ${outfmtFields}"`;
+
+  exec(
+    command,
+    { maxBuffer: 10 * 1024 * 1024 },
+    (error, stdout, stderr) => {
+
+      // -----------------------------------------------------
+      // Clean up temporary FASTA file
+      // -----------------------------------------------------
+
+      try {
+        if (fs.existsSync(tempFastaFile)) {
+          fs.unlinkSync(tempFastaFile);
         }
-        return obj;
-      });
+      } catch (cleanupErr) {
+        console.warn(
+          'Failed to remove temporary FASTA file:',
+          cleanupErr
+        );
+      }
 
-    // Return frontend-ready JSON table: columns + rows
-    return res.status(200).json({ columns, rows });
-  });
+      // -----------------------------------------------------
+      // Handle BLAST execution errors
+      // -----------------------------------------------------
+
+      if (error) {
+        console.error('Error executing blastn:', error);
+
+        return res.status(500).json({
+          error: error.message || 'BLAST execution failed',
+        });
+      }
+
+      // BLAST may write warnings to stderr even when successful
+      if (stderr) {
+        console.warn('BLAST stderr:', stderr);
+      }
+
+      // -----------------------------------------------------
+      // No BLAST matches
+      // -----------------------------------------------------
+
+      if (!stdout || stdout.trim() === '') {
+        return res.status(200).json({
+          columns: [
+            'querySequenceId',
+            'matchedSequence',
+            'percentIdentity',
+            'alignmentLength',
+            'mismatchCount',
+            'gapOpenings',
+            'eValue',
+            'bitScore',
+          ],
+          rows: [],
+        });
+      }
+
+      // -----------------------------------------------------
+      // Parse BLAST output
+      // -----------------------------------------------------
+
+      const blastColumns = outfmtFields.split(/\s+/);
+
+      const columnNames = {
+        qseqid: 'querySequenceId',
+        stitle: 'matchedSequence',
+        pident: 'percentIdentity',
+        length: 'alignmentLength',
+        mismatch: 'mismatchCount',
+        gapopen: 'gapOpenings',
+        evalue: 'eValue',
+        bitscore: 'bitScore',
+      };
+
+      const numericFields = new Set([
+        'pident',
+        'length',
+        'mismatch',
+        'gapopen',
+        'evalue',
+        'bitscore',
+      ]);
+
+      // -----------------------------------------------------
+      // Parse biological metadata from stitle
+      // -----------------------------------------------------
+
+      const parseMetadata = (title) => {
+        if (!title) {
+          return {
+            isolateCode: null,
+            sampleType: null,
+            batSource: null,
+            samplingSite: null,
+            gramReaction: null,
+            cellShape: null,
+            oxygenRequirement: null,
+            cytochromeCOxidase: null,
+            endosporeFormation: null,
+            antibioticResistanceProfile: null,
+            identity: null,
+            pathogenicity: null,
+          };
+        }
+
+        /*
+         * Example stitle:
+         *
+         * B1I1
+         * |Bat fecal pellet
+         * |Rhinolophus rufus
+         * |Cavinti Underground River and Cave Complex, Cavinti, Laguna
+         * |Gram-negative
+         * |Rod-shaped
+         * |Facultative anaerobe
+         * |Oxidase-negative
+         * |Non-endospore-forming
+         * |Escherichia coli
+         * |Potentially pathogenic to humans
+         */
+
+        const metadata = title
+          .split('|')
+          .map((value) => value.trim());
+
+        return {
+          isolateCode: metadata[0] || null,
+
+          sampleType: metadata[1] || null,
+
+          batSource: metadata[2] || null,
+
+          samplingSite: metadata[3] || null,
+
+          gramReaction: metadata[4] || null,
+
+          cellShape: metadata[5] || null,
+
+          oxygenRequirement: metadata[6] || null,
+
+          cytochromeCOxidase: metadata[7] || null,
+
+          endosporeFormation: metadata[8] || null,
+
+          /*
+           * Your current metadata does not contain an
+           * antibiotic resistance field, so leave this
+           * as null for now.
+           */
+          antibioticResistanceProfile: null,
+
+          identity: metadata[9] || null,
+
+          pathogenicity: metadata[10] || null,
+        };
+      };
+
+      // -----------------------------------------------------
+      // Parse each BLAST row
+      // -----------------------------------------------------
+
+      const rows = stdout
+        .trim()
+        .split(/\r?\n/)
+        .filter((line) => line.trim() !== '')
+        .map((line) => {
+          const parts = line.split('\t');
+          const row = {};
+
+          for (let i = 0; i < blastColumns.length; i++) {
+            const blastColumn = blastColumns[i];
+            const jsonColumn = columnNames[blastColumn];
+
+            const value =
+              parts[i] !== undefined && parts[i] !== ''
+                ? parts[i]
+                : null;
+
+            if (value === null) {
+              row[jsonColumn] = null;
+            } else if (numericFields.has(blastColumn)) {
+              row[jsonColumn] = Number(value);
+            } else {
+              row[jsonColumn] = value;
+            }
+          }
+
+          // Parse the metadata contained in stitle
+          row.metadata = parseMetadata(row.matchedSequence);
+
+          return row;
+        });
+
+      // -----------------------------------------------------
+      // Return frontend-ready JSON
+      // -----------------------------------------------------
+
+      return res.status(200).json({
+        columns: [
+          'querySequenceId',
+          'matchedSequence',
+          'percentIdentity',
+          'alignmentLength',
+          'mismatchCount',
+          'gapOpenings',
+          'eValue',
+          'bitScore',
+        ],
+        rows,
+      });
+    }
+  );
 };
