@@ -18,11 +18,13 @@ import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
 import { Icon } from '@mui/material';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function Testimonials() {
 
 
   const restrictUser = (email) => {
-    axios.post('http://localhost:5000/api/data/restrictUser', { email })
+    axios.post(`${API_BASE_URL}/api/data/restrictUser`, { email })
       .then(response => {
         console.log(response.data.message);
         // Optionally, update the users state to reflect the change
@@ -35,7 +37,7 @@ export default function Testimonials() {
 
 
   const approveUser = (email) => {
-    axios.post('http://localhost:5000/api/data/approveUser', { email })
+    axios.post(`${API_BASE_URL}/api/data/approveUser`, { email })
 
       .then(response => {
         console.log(response.data.message);
@@ -52,7 +54,7 @@ const [users, setUsers] = useState([]);
 
 useEffect(() => {
   axios
-    .get("http://localhost:5000/api/data/getuser")
+    .get(`${API_BASE_URL}/api/data/getuser`)
     .then((response) => {
       setUsers(response.data);
 

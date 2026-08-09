@@ -9,6 +9,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 
 app.use(cors());
 app.use(express.json());
@@ -27,6 +28,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error', details: err && err.message ? err.message : String(err) });
 });
 
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server is running on http://${HOST}:${PORT}`);
 });

@@ -21,6 +21,8 @@ import BlastLogo from '../assets/images/blast_logo.png';
 import { useTheme } from '@mui/material/styles';
 import '../App.css';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 const BlastSearch = () => {
   const theme = useTheme();
 
@@ -146,7 +148,7 @@ const BlastSearch = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/blastn',
+        `${API_BASE_URL}/api/blastn`,
         { sequence }
       );
 
