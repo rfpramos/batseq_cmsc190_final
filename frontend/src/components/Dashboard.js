@@ -76,13 +76,17 @@ export default function Dashboard() {
 
   const [sharedData, setSharedData] = useState([]);
 
+  const fetchDataset = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/data');
+      setDataset(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/data")
-      .then((response) => {
-        setDataset(response.data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+    fetchDataset();
   }, []);
 
   const fetchSharedData = async (email) => {
@@ -222,9 +226,10 @@ export default function Dashboard() {
   const handleAddSubmit = () => {
     axios
       .post("http://localhost:5000/api/data", newIsolate)
-      .then((response) => {
-        setDataset([...dataset, response.data]);
-
+      .then(() => {
+        return fetchDataset();
+      })
+      .then(() => {
         handleAddClose();
       })
       .catch((error) => console.error("Error adding data:", error));
@@ -279,13 +284,10 @@ export default function Dashboard() {
         `http://localhost:5000/api/data/${editIsolate.isolate_code}`,
         editIsolate
       )
-      .then((response) => {
-        const updatedDataset = dataset.map((item) =>
-          item.isolate_code === response.data.isolate_code
-            ? response.data
-            : item
-        );
-        setDataset(updatedDataset);
+      .then(() => {
+        return fetchDataset();
+      })
+      .then(() => {
         handleCloseEdit();
       })
       .catch((error) => console.error("Error updating data:", error));
