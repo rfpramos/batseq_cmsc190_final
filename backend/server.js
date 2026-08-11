@@ -63,7 +63,23 @@ app.use('/api', apiLimiter);
 app.use('/api/auth', authLimiter);
 app.use('/api/blastn', blastLimiter);
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    message: 'BatSEQ API is running',
+    docs: '/api',
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 app.use('/api', dataRoutes);
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Not found' });
+});
 
 // Error handler (captures thrown errors from routes)
 app.use((err, req, res, next) => {
