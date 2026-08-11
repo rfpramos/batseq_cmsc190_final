@@ -1,4 +1,6 @@
 FROM node:20-alpine as build
+ARG REACT_APP_API_BASE_URL=http://localhost:8080
+ENV REACT_APP_API_BASE_URL=$REACT_APP_API_BASE_URL
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
