@@ -52,6 +52,8 @@ router.post('/signup', dataController.addUser); // Route for user signup
 router.post('/auth/user', dataController.authenticateUser); // Route for user login
 
 router.post('/auth/admin', dataController.authenticateAdmin); // Route for admin login
+router.get('/auth/session', dataController.getSessionStatus); // Route to validate current session cookie
+router.post('/auth/logout', dataController.logout); // Route to clear auth session cookie
 
 router.get('/data/getuser', dataController.getUsers); // Route to get all users
 router.post('/data/approveUser', dataController.approveUser); // Route to approve a user, approve means the user can mutate the dataset
@@ -60,7 +62,7 @@ router.post('/data/restrictUser', dataController.restrictUser); // Route to rest
 router.post('/blastn', dataController.blastn); // Route to perform BLASTN search
 
 /**
- * @todo Implement Routes (if needed) for seqviz
+ * @todo Implement Routes 
  * @todo Implement Routes for phylogenetic tree generation using phylotreeJS
  */
 
