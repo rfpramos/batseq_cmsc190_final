@@ -28,8 +28,15 @@ const fs = require('fs'); // file system module for reading and writing files
 const { execFile } = require('child_process'); // execFile avoids shell interpretation
 const path = require('path'); // path module for handling file paths
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 12);
+const APP_JWT_SECRET = process.env.APP_JWT_SECRET || 'replace-this-jwt-secret-in-production';
+const APP_JWT_EXPIRES_IN = process.env.APP_JWT_EXPIRES_IN || '7d';
+const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || 'batseq_session';
+const SESSION_COOKIE_MAX_AGE_MS = Number(process.env.SESSION_COOKIE_MAX_AGE_MS || 7 * 24 * 60 * 60 * 1000);
+const COOKIE_SECURE = process.env.COOKIE_SECURE === 'true';
+const COOKIE_SAME_SITE = process.env.COOKIE_SAME_SITE || 'lax';
 
 const sanitizeUserRow = (row) => {
   if (!row) {
@@ -42,6 +49,98 @@ const sanitizeUserRow = (row) => {
 
 const isValidEmail = (email) => typeof email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
+const normalizeEmail = (email) => email.trim().toLowerCase();
+
+const queryAsync = (query, values) => new Promise((resolve, reject) => {
+  connection.query(query, values, (err, results) => {
+    if (err) {
+      reject(err);
+      return;
+    }
+    resolve(results);
+  });
+});
+
+const createAuthToken = (user) => jwt.sign(
+  {
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+  },
+  APP_JWT_SECRET,
+  { expiresIn: APP_JWT_EXPIRES_IN }
+);
+
+const setSessionCookie = (res, token) => {
+  res.cookie(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: COOKIE_SECURE,
+    sameSite: COOKIE_SAME_SITE,
+    maxAge: SESSION_COOKIE_MAX_AGE_MS,
+    path: '/',
+  });
+};
+
+const clearSessionCookie = (res) => {
+  res.clearCookie(SESSION_COOKIE_NAME, {
+    httpOnly: true,
+    secure: COOKIE_SECURE,
+    sameSite: COOKIE_SAME_SITE,
+    path: '/',
+  });
+};
+
+const parseCookieHeader = (cookieHeader) => {
+  if (!isNonEmptyString(cookieHeader)) {
+    return {};
+  }
+
+  return cookieHeader
+    .split(';')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .reduce((acc, pair) => {
+      const separatorIndex = pair.indexOf('=');
+      if (separatorIndex === -1) {
+        return acc;
+      }
+
+      const key = pair.substring(0, separatorIndex).trim();
+      const value = pair.substring(separatorIndex + 1).trim();
+      if (key) {
+        acc[key] = decodeURIComponent(value);
+      }
+      return acc;
+    }, {});
+};
+
+const getSessionUser = async (req) => {
+  const cookies = parseCookieHeader(req.headers.cookie || '');
+  const token = cookies[SESSION_COOKIE_NAME];
+
+  if (!isNonEmptyString(token)) {
+    return null;
+  }
+
+  const decoded = jwt.verify(token, APP_JWT_SECRET);
+  const userId = Number(decoded.sub);
+
+  if (!Number.isFinite(userId)) {
+    return null;
+  }
+
+  const results = await queryAsync(
+    'SELECT id, username, email, role, approved, created_at, updated_at FROM users WHERE id = ? LIMIT 1',
+    [userId]
+  );
+
+  if (results.length === 0) {
+    return null;
+  }
+
+  return results[0];
+};
+
 
 const verifyPassword = (plainPassword, storedPassword, callback) => {
   if (typeof storedPassword === 'string' && storedPassword.startsWith('$2')) {
@@ -130,7 +229,7 @@ exports.approveUser = (req, res) => {
     return res.status(400).json({ error: 'Valid email is required' });
   }
   const query = 'UPDATE users SET approved = 1 WHERE email = ?';
-  connection.query(query, [email.trim().toLowerCase()], (err, results) => {
+  connection.query(query, [normalizeEmail(email)], (err, results) => {
     if (err) {
       console.error('Error approving user:', err);
       res.status(500).json({ error: 'Failed to approve user' });
@@ -402,6 +501,9 @@ exports.authenticateUser = (req, res) => {
       }
 
       if (migratedHash) {
+        const safeUser = sanitizeUserRow(results[0]);
+        const sessionToken = createAuthToken(safeUser);
+
         connection.query(
           'UPDATE users SET password = ? WHERE id = ?',
           [migratedHash, results[0].id],
@@ -410,13 +512,17 @@ exports.authenticateUser = (req, res) => {
               console.warn('Failed to migrate legacy user password hash:', updateErr);
             }
 
-            res.status(200).json({ message: 'User authenticated successfully', user: sanitizeUserRow(results[0]) });
+            setSessionCookie(res, sessionToken);
+            res.status(200).json({ message: 'User authenticated successfully', user: safeUser });
           }
         );
         return;
       }
 
-      res.status(200).json({ message: 'User authenticated successfully', user: sanitizeUserRow(results[0]) });
+      const safeUser = sanitizeUserRow(results[0]);
+      const sessionToken = createAuthToken(safeUser);
+      setSessionCookie(res, sessionToken);
+      res.status(200).json({ message: 'User authenticated successfully', user: safeUser });
     });
   });
 };
@@ -441,7 +547,7 @@ exports.authenticateAdmin = (req, res) => {
   }
 
   const query = 'SELECT id, username, password, email, role, approved, created_at, updated_at FROM users WHERE email = ? AND role = "admin" LIMIT 1';
-  connection.query(query, [email.trim().toLowerCase()], (err, results) => {
+  connection.query(query, [normalizeEmail(email)], (err, results) => {
     if (err) {
       console.error('Error authenticating user:', err);
       res.status(500).json({ error: 'Failed to authenticate user' });
@@ -465,6 +571,9 @@ exports.authenticateAdmin = (req, res) => {
       }
 
       if (migratedHash) {
+        const safeUser = sanitizeUserRow(results[0]);
+        const sessionToken = createAuthToken(safeUser);
+
         connection.query(
           'UPDATE users SET password = ? WHERE id = ?',
           [migratedHash, results[0].id],
@@ -473,15 +582,44 @@ exports.authenticateAdmin = (req, res) => {
               console.warn('Failed to migrate legacy admin password hash:', updateErr);
             }
 
-            res.status(200).json({ message: 'User authenticated successfully', user: sanitizeUserRow(results[0]) });
+            setSessionCookie(res, sessionToken);
+            res.status(200).json({ message: 'User authenticated successfully', user: safeUser });
           }
         );
         return;
       }
 
-      res.status(200).json({ message: 'User authenticated successfully', user: sanitizeUserRow(results[0]) });
+      const safeUser = sanitizeUserRow(results[0]);
+      const sessionToken = createAuthToken(safeUser);
+      setSessionCookie(res, sessionToken);
+      res.status(200).json({ message: 'User authenticated successfully', user: safeUser });
     });
   });
+};
+
+exports.getSessionStatus = async (req, res) => {
+  try {
+    const user = await getSessionUser(req);
+
+    if (!user) {
+      res.status(401).json({ isAuthenticated: false });
+      return;
+    }
+
+    res.status(200).json({
+      isAuthenticated: true,
+      user: sanitizeUserRow(user),
+    });
+  } catch (err) {
+    console.error('Error validating session:', err);
+    clearSessionCookie(res);
+    res.status(401).json({ isAuthenticated: false });
+  }
+};
+
+exports.logout = (req, res) => {
+  clearSessionCookie(res);
+  res.status(200).json({ message: 'Logged out successfully' });
 };
 
 
