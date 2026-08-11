@@ -55,6 +55,10 @@ export default function SignIn() {
       return process.env.REACT_APP_API_URL;
     }
 
+    if (process.env.REACT_APP_API_BASE_URL) {
+      return process.env.REACT_APP_API_BASE_URL;
+    }
+
     if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
       return '';
     }
