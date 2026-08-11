@@ -78,13 +78,26 @@ export default function Dashboard() {
 
   const [sharedData, setSharedData] = useState([]);
 
+  const fetchDataset = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/data');
+      setDataset(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
+<<<<<<< HEAD
     axios
       .get(`${API_BASE_URL}/api/data`)
       .then((response) => {
         setDataset(response.data);
       })
       .catch((error) => console.error("Error fetching data:", error));
+=======
+    fetchDataset();
+>>>>>>> main
   }, []);
 
   const fetchSharedData = async (email) => {
@@ -223,10 +236,18 @@ export default function Dashboard() {
 
   const handleAddSubmit = () => {
     axios
+<<<<<<< HEAD
       .post(`${API_BASE_URL}/api/data`, newIsolate)
       .then((response) => {
         setDataset([...dataset, response.data]);
 
+=======
+      .post("http://localhost:5000/api/data", newIsolate)
+      .then(() => {
+        return fetchDataset();
+      })
+      .then(() => {
+>>>>>>> main
         handleAddClose();
       })
       .catch((error) => console.error("Error adding data:", error));
@@ -281,13 +302,10 @@ export default function Dashboard() {
         `${API_BASE_URL}/api/data/${editIsolate.isolate_code}`,
         editIsolate
       )
-      .then((response) => {
-        const updatedDataset = dataset.map((item) =>
-          item.isolate_code === response.data.isolate_code
-            ? response.data
-            : item
-        );
-        setDataset(updatedDataset);
+      .then(() => {
+        return fetchDataset();
+      })
+      .then(() => {
         handleCloseEdit();
       })
       .catch((error) => console.error("Error updating data:", error));
@@ -565,8 +583,8 @@ export default function Dashboard() {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    bgColor: "linear-gradient(45deg, #00e676, #76ff03)",
-
+                    background: "linear-gradient(45deg, #005029, #71d122)",
+                    color: "white",
                     flexGrow: 1,
                     p: 1,
                   }}

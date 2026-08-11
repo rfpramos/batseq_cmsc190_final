@@ -5,6 +5,9 @@ import {
   Container,
   Typography,
   Paper,
+  Button,
+  Chip,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -18,13 +21,14 @@ import {
 } from '@mui/material';
 
 import BlastLogo from '../assets/images/blast_logo.png';
-import { useTheme } from '@mui/material/styles';
+import { alpha, useTheme } from '@mui/material/styles';
 import '../App.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const BlastSearch = () => {
   const theme = useTheme();
+  const isolateCardGradient = 'linear-gradient(45deg, #00e676, #76ff03)';
 
   const [sequence, setSequence] = useState('');
   const [results, setResults] = useState(null);
@@ -418,108 +422,199 @@ const BlastSearch = () => {
       column !== 'qseqid'
   );
 
+  const resultCount = Array.isArray(results) ? results.length : 0;
+
   return (
     <Container
       id="blaster"
       sx={{
-        pt: { xs: 4, sm: 12 },
+        mt: { xs: 8, sm: 10 },
+        pt: { xs: 6, sm: 10 },
         pb: { xs: 8, sm: 16 },
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         gap: { xs: 3, sm: 6 },
+        px: { xs: 2, sm: 3 },
       }}
     >
-      <img
-        src={BlastLogo}
-        alt="BLAST Logo"
-        style={{
-          width: '100%',
-          maxWidth: '900px',
-        }}
-      />
-
       <Box sx={{ width: '100%' }}>
-
-        {/* Description */}
-        <Typography component="p" sx={{ mb: 1 }}>
-          {subtitleExpanded
-            ? 'Enter a 16S rRNA sequence in FASTA format to search for similar sequences. This tool performs a BLAST search against configured databases and returns aligned hits, scores, and metadata to help identify close relatives.'
-            : 'Enter a 16S rRNA sequence in FASTA format to search for similar sequences.'}
-
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, md: 4 },
+            borderRadius: 5,
+            overflow: 'hidden',
+            position: 'relative',
+            background: `linear-gradient(135deg, ${alpha('#166534', 0.96)} 0%, ${alpha('#16a34a', 0.93)} 48%, ${alpha('#84cc16', 0.9)} 100%)`,
+            color: 'common.white',
+            boxShadow: '0 24px 64px rgba(22, 101, 52, 0.22)',
+          }}
+        >
           <Box
-            component="span"
             sx={{
-              ml: 1,
-              color: 'primary.main',
-              cursor: 'pointer',
-              fontWeight: 700,
-            }}
-            onClick={() =>
-              setSubtitleExpanded(!subtitleExpanded)
-            }
-          >
-            {subtitleExpanded
-              ? 'See less'
-              : 'See more'}
-          </Box>
-        </Typography>
-
-        {/* Search form */}
-        <form onSubmit={handleSubmit}>
-          <textarea
-            value={sequence}
-            onChange={handleChange}
-            rows="10"
-            placeholder="Enter 16S rRNA sequence in FASTA format"
-            style={{
-              color:
-                theme.palette.mode === 'dark'
-                  ? 'white'
-                  : theme.palette.text.primary,
-
-              width: '100%',
-              borderRadius: '10px',
-              backgroundColor: 'transparent',
-              border: '1px solid #ccc',
-              padding: '10px',
-              resize: 'vertical',
-              fontFamily: 'monospace',
-              boxSizing: 'border-box',
+              position: 'absolute',
+              inset: 0,
+              background: 'radial-gradient(circle at top right, rgba(255,255,255,0.22), transparent 36%)',
+              pointerEvents: 'none',
             }}
           />
-
-          <br />
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              backgroundColor: '#66bb6a',
-              color: 'white',
-              marginTop: '10px',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              cursor: loading
-                ? 'not-allowed'
-                : 'pointer',
-              fontWeight: 'bold',
-              opacity: loading ? 0.7 : 1,
-            }}
+          <Stack
+            direction={{ xs: 'column', lg: 'row' }}
+            spacing={{ xs: 3, lg: 4 }}
+            alignItems={{ xs: 'flex-start', lg: 'center' }}
+            sx={{ position: 'relative' }}
           >
-            {loading
-              ? 'Searching...'
-              : 'Search'}
-          </button>
-        </form>
+            <Box sx={{ flex: 1, width: '100%' }}>
+              <Box
+                component="img"
+                src={BlastLogo}
+                alt="BLAST Logo"
+                sx={{
+                  width: '100%',
+                  maxWidth: 360,
+                  mb: 2,
+                  filter: 'drop-shadow(0 12px 28px rgba(0,0,0,0.18))',
+                }}
+              />
+
+              <Stack direction="row" spacing={1} sx={{ mb: 2, flexWrap: 'wrap' }}>
+                <Chip
+                  label="16S rRNA Search"
+                  sx={{
+                    color: 'common.white',
+                    bgcolor: 'rgba(255,255,255,0.14)',
+                    backdropFilter: 'blur(8px)',
+                  }}
+                />
+                <Chip
+                  label="Metadata-Aware Matches"
+                  sx={{
+                    color: 'common.white',
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(8px)',
+                  }}
+                />
+              </Stack>
+
+              <Typography variant="h3" sx={{ fontWeight: 800, lineHeight: 1.05, mb: 1.5 }}>
+                Run a nucleotide similarity search against your curated dataset
+              </Typography>
+
+              <Typography component="p" sx={{ maxWidth: 760, color: 'rgba(255,255,255,0.88)', lineHeight: 1.7 }}>
+                {subtitleExpanded
+                  ? 'Enter a 16S rRNA sequence in FASTA format to search for similar sequences. This tool performs a BLAST search against configured databases and returns aligned hits, scores, and metadata to help identify close relatives.'
+                  : 'Enter a 16S rRNA sequence in FASTA format to search for similar sequences.'}
+
+                <Box
+                  component="span"
+                  sx={{
+                    ml: 1,
+                    color: 'rgba(255,255,255,0.95)',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    textDecoration: 'underline',
+                    textUnderlineOffset: '3px',
+                  }}
+                  onClick={() =>
+                    setSubtitleExpanded(!subtitleExpanded)
+                  }
+                >
+                  {subtitleExpanded
+                    ? 'See less'
+                    : 'See more'}
+                </Box>
+              </Typography>
+            </Box>
+
+            <Paper
+              elevation={0}
+              sx={{
+                width: '100%',
+                maxWidth: 420,
+                p: 2.5,
+                borderRadius: 4,
+                bgcolor: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(255,255,255,0.18)',
+                backdropFilter: 'blur(18px)',
+              }}
+            >
+              <Typography variant="overline" sx={{ letterSpacing: 1.1, color: 'rgba(255,255,255,0.75)' }}>
+                Query Input
+              </Typography>
+
+              <form onSubmit={handleSubmit}>
+                <Box
+                  component="textarea"
+                  value={sequence}
+                  onChange={handleChange}
+                  rows="10"
+                  placeholder="Enter 16S rRNA sequence in FASTA format"
+                  sx={{
+                    mt: 1,
+                    width: '100%',
+                    resize: 'vertical',
+                    borderRadius: 3,
+                    border: '1px solid rgba(255,255,255,0.22)',
+                    bgcolor: 'rgba(7, 18, 10, 0.28)',
+                    color: 'common.white',
+                    p: 1.5,
+                    fontFamily: 'Consolas, Monaco, monospace',
+                    fontSize: '0.95rem',
+                    lineHeight: 1.5,
+                    boxSizing: 'border-box',
+                    outline: 'none',
+                    '&::placeholder': {
+                      color: 'rgba(255,255,255,0.55)',
+                    },
+                    '&:focus': {
+                      borderColor: 'rgba(255,255,255,0.7)',
+                      boxShadow: '0 0 0 3px rgba(255,255,255,0.12)',
+                    },
+                  }}
+                />
+
+                <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mt: 1.5, mb: 2 }}>
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.72)' }}>
+                    FASTA input supported
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.72)' }}>
+                    Secure local search
+                  </Typography>
+                </Stack>
+
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    py: 1.2,
+                    borderRadius: 999,
+                    fontWeight: 800,
+                    letterSpacing: 0.3,
+                    textTransform: 'none',
+                    color: '#14532d',
+                    bgcolor: '#f0fdf4',
+                    boxShadow: '0 12px 28px rgba(0,0,0,0.18)',
+                    '&:hover': {
+                      bgcolor: '#dcfce7',
+                    },
+                  }}
+                >
+                  {loading ? 'Searching BLAST...' : 'Search Sequence'}
+                </Button>
+              </form>
+            </Paper>
+          </Stack>
+        </Paper>
 
         {/* Error */}
         {error && (
           <Alert
             severity="error"
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, borderRadius: 3 }}
           >
             {error}
           </Alert>
@@ -554,30 +649,32 @@ const BlastSearch = () => {
               component="h1"
               variant="h4"
               sx={{
-                color: '#66bb6a',
-                fontWeight: 500,
-                textAlign: 'center',
+                color: '#15803d',
+                fontWeight: 800,
+                textAlign: 'left',
                 mt: 5,
-                mb: 1,
+                mb: 1.5,
               }}
             >
               Sequence of Matched Hits
             </Typography>
 
-            <Typography
-              variant="body2"
-              sx={{
-                textAlign: 'center',
-                color: 'text.secondary',
-                mb: 2,
-              }}
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={1.5}
+              sx={{ mb: 2.5 }}
             >
-              {results.length} matching sequence
-              {results.length !== 1
-                ? 's'
-                : ''}{' '}
-              found
-            </Typography>
+              <Chip
+                label={`${resultCount} matching sequence${resultCount !== 1 ? 's' : ''} found`}
+                sx={{
+                  bgcolor: alpha('#16a34a', 0.12),
+                  color: '#166534',
+                  fontWeight: 700,
+                  borderRadius: 2,
+                }}
+              />
+              
+            </Stack>
 
             {/* Results table */}
             {results.length > 0 ? (
@@ -587,10 +684,11 @@ const BlastSearch = () => {
                 sx={{
                   mt: 2,
                   maxHeight: '70vh',
-                  borderRadius: 3,
+                  borderRadius: 4,
                   overflow: 'auto',
-                  border: '1px solid',
-                  borderColor: 'divider',
+                  // background: isolateCardGradient,
+                  border: '1px solid rgba(22, 101, 52, 0.2)',
+                  boxShadow: '0 20px 48px rgba(22, 101, 52, 0.2)',
                 }}
               >
                 <Table
@@ -603,15 +701,21 @@ const BlastSearch = () => {
                 >
                   {/* Table header */}
                   <TableHead>
-                    <TableRow>
+                    <TableRow
+                      sx={{
+                        '& th': {
+                          
+                          backgroundColor: 'background.paper',
+                          color: 'text.primary',
+                        },
+                      }}
+                    >
                       {visibleColumns.map(
                         (column) => (
                           <TableCell
                             key={column}
                             sx={{
                               fontWeight: 700,
-                              backgroundColor:
-                                'background.paper',
                               whiteSpace:
                                 column ===
                                 'matchedSequence'
@@ -716,6 +820,8 @@ const BlastSearch = () => {
                   p: 4,
                   textAlign: 'center',
                   borderRadius: 3,
+                  background: isolateCardGradient,
+                  color: '#123524',
                 }}
               >
                 <Typography

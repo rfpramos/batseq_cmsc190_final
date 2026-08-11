@@ -1,28 +1,48 @@
 import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
+import { useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
+
 import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
-import { useTheme } from '@mui/system';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import DeleteIcon from '@mui/icons-material/Block';
 import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import Divider from '@mui/material/Divider';
 
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
-import { Icon } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import BlockIcon from '@mui/icons-material/Block';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import LockIcon from '@mui/icons-material/Lock';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import EmailIcon from '@mui/icons-material/Email';
 
+<<<<<<< HEAD
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export default function Testimonials() {
+=======
+const formatDateTime = (value) => {
+  if (!value) {
+    return 'Unavailable';
+  }
+>>>>>>> main
 
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
 
+<<<<<<< HEAD
   const restrictUser = (email) => {
     axios.post(`${API_BASE_URL}/api/data/restrictUser`, { email })
       .then(response => {
@@ -34,8 +54,31 @@ export default function Testimonials() {
         console.error('Error restricting user:', error);
       });
   };
+=======
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+};
+>>>>>>> main
 
+const roleMeta = {
+  admin: {
+    label: 'Administrator',
+    color: 'error',
+    icon: <AdminPanelSettingsIcon fontSize="small" />,
+  },
+  user: {
+    label: 'Standard User',
+    color: 'primary',
+    icon: <VerifiedUserIcon fontSize="small" />,
+  },
+};
 
+<<<<<<< HEAD
   const approveUser = (email) => {
     axios.post(`${API_BASE_URL}/api/data/approveUser`, { email })
 
@@ -56,112 +99,293 @@ useEffect(() => {
   axios
     .get(`${API_BASE_URL}/api/data/getuser`)
     .then((response) => {
-      setUsers(response.data);
+=======
+export default function Accounts() {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-      // console.log(response.data); // This will print the fetched data to the console
-    })
-    .catch((error) => console.error("Error fetching data:", error));
-}, []);
-  const theme = useTheme();
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('http://localhost:5000/api/data/getuser');
+>>>>>>> main
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const summary = useMemo(() => {
+    const total = users.length;
+    const admins = users.filter((user) => user.role === 'admin').length;
+    const active = users.filter((user) => Number(user.approved) === 1).length;
+    const restricted = total - active;
+    const uploadedSamples = users.reduce((count, user) => count + (Number(user.uploaded_sample_count) || 0), 0);
+
+    return { total, admins, active, restricted, uploadedSamples };
+  }, [users]);
+
+  const updateApprovalState = async (email, approved) => {
+    const endpoint = approved ? '/api/data/approveUser' : '/api/data/restrictUser';
+    try {
+      await axios.post(`http://localhost:5000${endpoint}`, { email });
+      setUsers((currentUsers) =>
+        currentUsers.map((user) =>
+          user.email === email ? { ...user, approved: approved ? 1 : 0 } : user
+        )
+      );
+    } catch (error) {
+      console.error(`Error updating access for ${email}:`, error);
+    }
+  };
 
   return (
     <Container
-      id="testimonials"
+      id="accounts"
+      maxWidth="xl"
       sx={{
-        pt: { xs: 4, sm: 12 },
-        pb: { xs: 8, sm: 16 },
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: { xs: 3, sm: 6 },
+        mt: { xs: 10, sm: 12 },
+        px: { xs: 2, sm: 3, md: 4 },
+        pt: { xs: 2, sm: 4 },
+        pb: { xs: 8, sm: 12 },
       }}
     >
-      <Box
+      <Paper
+        elevation={0}
         sx={{
-          width: { sm: '100%', md: '60%' },
-          textAlign: { sm: 'left', md: 'center' },
+          p: { xs: 3, sm: 4 },
+          mb: 4,
+          borderRadius: 4,
+          background: 'linear-gradient(135deg, rgba(18,94,54,0.96) 0%, rgba(22,163,74,0.94) 52%, rgba(132,204,22,0.92) 100%)',
+          color: 'common.white',
+          border: '1px solid rgba(255,255,255,0.08)',
         }}
       >
-        <Typography component="h2" variant="h4" color="text.primary">
-          Users
+        <Stack spacing={2}>
+          <Box>
+            <Chip
+              icon={<LockIcon />}
+              label="Role-Based Access Control"
+              sx={{ mb: 2, color: 'common.white', borderColor: 'rgba(255,255,255,0.28)' }}
+              variant="outlined"
+            />
+            <Typography component="h2" variant="h3" sx={{ fontWeight: 700, lineHeight: 1.1 }}>
+              Accounts & access posture
+            </Typography>
+            <Typography variant="body1" sx={{ mt: 1, maxWidth: 760, color: 'rgba(255,255,255,0.78)' }}>
+              Review who can sign in, which users are admins, and which accounts are currently approved or restricted.
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ borderRadius: 3, height: '100%' }}>
+                <CardContent>
+                  <Typography variant="overline" color="text.secondary">
+                    Total users
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                    {summary.total}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ borderRadius: 3, height: '100%' }}>
+                <CardContent>
+                  <Typography variant="overline" color="text.secondary">
+                    Admins
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                    {summary.admins}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ borderRadius: 3, height: '100%' }}>
+                <CardContent>
+                  <Typography variant="overline" color="text.secondary">
+                    Approved access
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                    {summary.active}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Card sx={{ borderRadius: 3, height: '100%' }}>
+                <CardContent>
+                  <Typography variant="overline" color="text.secondary">
+                    Uploaded samples
+                  </Typography>
+                  <Typography variant="h4" sx={{ fontWeight: 700 }}>
+                    {summary.uploadedSamples}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Stack>
+      </Paper>
+
+      <Box sx={{ mb: 3 }}>
+        <Typography component="h3" variant="h5" sx={{ fontWeight: 700 }}>
+          Current users
         </Typography>
-        <Typography variant="body1" color="text.secondary">
-          You can approve or reject users here.
+        <Typography variant="body2" color="text.secondary">
+          Each card shows the user&apos;s role, access state, and account timestamps.
         </Typography>
       </Box>
+
       <Grid container spacing={2}>
-        {users.map((user, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index} sx={{ display: 'flex' }}>
-            <Card
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                flexGrow: 1,
-                p: 1,
-              }}
-            >
-{/* 
-// +------------+----------------------+------+-----+---------------------+-------------------------------+
-// | Field      | Type                 | Null | Key | Default             | Extra                         |
-// +------------+----------------------+------+-----+---------------------+-------------------------------+
-// | id         | int(11)              | NO   | PRI | NULL                | auto_increment                |
-// | username   | varchar(50)          | NO   | UNI | NULL                |                               |
-// | password   | varchar(255)         | NO   |     | NULL                |                               |
-// | email      | varchar(100)         | NO   | UNI | NULL                |                               |
-// | role       | enum('admin','user') | NO   |     | user                |                               |
-// | created_at | timestamp            | YES  |     | current_timestamp() |                               |
-// | updated_at | timestamp            | YES  |     | current_timestamp() | on update current_timestamp() |
-// | approved   | tinyint(1)           | YES  |     | 0                   |                               |
-// +------------+----------------------+------+-----+---------------------+-------------------------------+ */}
-<CardContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-  <Typography variant="h5" color="text.primary">
-    {user.username}
-  </Typography>
-</CardContent>
-<CardContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-  <Typography variant="p" color="text.primary">
-    {user.approved ? 'Approved' : 'Restricted Access'}
-  </Typography>
-</CardContent>
-              <Box
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  pr: 2,
-                }}>
-                
-                <CardHeader
-                  avatar={
-                    <Icon sx={{color:'green'}}>
-                      {user.role === 'admin' ? <BusinessIcon /> : <PersonIcon />}
-                    </Icon>
-                  }
-                  title={user.email}
-                  subheader={user.created_at}
-                  action={
-                    <>
-                      <IconButton aria-label="edit" sx={{ color: 'green' }}
-                 
-                      onClick={() => approveUser(user.email)}
-                      >
-                        <CheckCircleIcon />
-                      </IconButton>
-                      <IconButton aria-label="delete" sx={{ color: 'green' }}
-                      onClick={() => restrictUser(user.email)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  }
-                />
-            
-              </Box>
+        {isLoading ? (
+          <Grid item xs={12}>
+            <Card sx={{ borderRadius: 3 }}>
+              <CardContent>
+                <Typography color="text.secondary">Loading users...</Typography>
+              </CardContent>
             </Card>
           </Grid>
-        ))}
+        ) : (
+          users.map((user) => {
+            const isAdmin = user.role === 'admin';
+            const isApproved = Number(user.approved) === 1;
+            const roleInfo = roleMeta[user.role] || roleMeta.user;
+
+            return (
+              <Grid item xs={12} md={6} lg={4} key={user.id ?? user.email} sx={{ display: 'flex' }}>
+                <Card
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    flexGrow: 1,
+                    borderRadius: 4,
+                    border: '1px solid rgba(0,0,0,0.08)',
+                    boxShadow: '0 14px 40px rgba(15, 23, 42, 0.08)',
+                  }}
+                >
+                  <CardContent sx={{ pb: 1.5 }}>
+                    <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                      <Avatar sx={{ bgcolor: isAdmin ? 'error.main' : 'primary.main' }}>
+                        {isAdmin ? <BusinessIcon /> : <PersonIcon />}
+                      </Avatar>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }} noWrap>
+                          {user.username}
+                        </Typography>
+                        <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: 'wrap' }}>
+                          <Chip icon={roleInfo.icon} label={roleInfo.label} color={roleInfo.color} size="small" />
+                          <Chip
+                            icon={isApproved ? <CheckCircleIcon /> : <BlockIcon />}
+                            label={isApproved ? 'Approved' : 'Restricted'}
+                            color={isApproved ? 'success' : 'default'}
+                            size="small"
+                            variant={isApproved ? 'filled' : 'outlined'}
+                          />
+                        </Stack>
+                      </Box>
+                    </Stack>
+
+                    <Stack spacing={1.25} sx={{ color: 'text.secondary' }}>
+                      <Stack direction="row" spacing={1.1} alignItems="center">
+                        <EmailIcon fontSize="small" />
+                        <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
+                          {user.email}
+                        </Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1.1} alignItems="center">
+                        <AccessTimeIcon fontSize="small" />
+                        <Typography variant="body2">Created: {formatDateTime(user.created_at)}</Typography>
+                      </Stack>
+                      <Stack direction="row" spacing={1.1} alignItems="center">
+                        <AccessTimeIcon fontSize="small" />
+                        <Typography variant="body2">Updated: {formatDateTime(user.updated_at)}</Typography>
+                      </Stack>
+                    </Stack>
+
+                    <Divider sx={{ my: 2 }} />
+
+                    <Box>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, mb: 1 }}>
+                        Uploaded samples ({Number(user.uploaded_sample_count) || 0})
+                      </Typography>
+
+                      {Array.isArray(user.uploaded_samples) && user.uploaded_samples.length > 0 ? (
+                        <Stack spacing={1}>
+                          {user.uploaded_samples.slice(0, 3).map((sample) => (
+                            <Box
+                              key={sample.isolate_code}
+                              sx={{
+                                p: 1.25,
+                                borderRadius: 2,
+                                bgcolor: 'rgba(15, 23, 42, 0.04)',
+                                border: '1px solid rgba(15, 23, 42, 0.08)',
+                              }}
+                            >
+                              <Stack spacing={0.3}>
+                                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                                  {sample.isolate_code}
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  {sample.type_of_sample} · {sample.sampling_site}
+                                </Typography>
+                              </Stack>
+                            </Box>
+                          ))}
+
+                          {user.uploaded_samples.length > 3 ? (
+                            <Typography variant="caption" color="text.secondary">
+                              +{user.uploaded_samples.length - 3} more sample(s)
+                            </Typography>
+                          ) : null}
+                        </Stack>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          No uploaded samples recorded for this account.
+                        </Typography>
+                      )}
+                    </Box>
+                  </CardContent>
+
+                  <CardContent sx={{ pt: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography variant="body2" color="text.secondary">
+                      {isAdmin ? 'Privileged account' : 'Standard account'}
+                    </Typography>
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        size="small"
+                        variant={isApproved ? 'outlined' : 'contained'}
+                        color="success"
+                        onClick={() => updateApprovalState(user.email, true)}
+                        disabled={isApproved}
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        size="small"
+                        variant={!isApproved ? 'outlined' : 'contained'}
+                        color="error"
+                        onClick={() => updateApprovalState(user.email, false)}
+                        disabled={!isApproved}
+                      >
+                        Restrict
+                      </Button>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })
+        )}
       </Grid>
     </Container>
   );
