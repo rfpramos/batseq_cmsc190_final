@@ -50,6 +50,7 @@ const defaultTheme = createTheme({
 
 export default function SignIn() {
   const navigate = useNavigate();
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
   const appStyle = {
     backgroundImage: `url(${bg})`,
     backgroundSize: "cover", // Cover the entire page
@@ -134,8 +135,9 @@ export default function SignIn() {
                
                 
                   try {
-                    const response = await fetch('http://localhost:5000/api/auth/admin', {
+                    const response = await fetch(`${apiBaseUrl}/api/auth/admin`, {
                       method: 'POST',
+                      credentials: 'include',
                       headers: {
                         'Content-Type': 'application/json',
                       },
@@ -150,6 +152,9 @@ export default function SignIn() {
                       localStorage.setItem('userLoggedIn', 'true');
                       localStorage.setItem('isAdmin', 'true');
                       localStorage.setItem('email', email);
+                      if (data.user && data.user.role) {
+                        localStorage.setItem('role', data.user.role);
+                      }
                       navigate("/home");
                     } else {
                       const originalColor = button.style.backgroundColor;

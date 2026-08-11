@@ -11,8 +11,10 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import logo from "../assets/images/logo.png"; // Adjust the path as necessary
+import logo from "../assets/images/logo.png";
 
 import bg from "../assets/images/bg-gradient.png";
 
@@ -21,46 +23,45 @@ import BuildIcon from "@mui/icons-material/Build";
 import { brand } from "../getLPTheme";
 import { useNavigate } from 'react-router-dom';
 
-
-// function Copyright(props) {
-//   return (
-//     <Typography variant="body2" color="text.secondary" align="center" {...props}>
-//       {'Copyright © '}
-//       <Link color="inherit" href="https://mui.com/">
-//         Your Website
-//       </Link>{' '}
-//       {new Date().getFullYear()}
-//       {'.'}
-//     </Typography>
-//   );
-// }
-
-// TODO remove, this demo shouldn't need to reset the theme.
-
 const defaultTheme = createTheme({
   palette: {
     primary: {
-      main: "#4CAF50", // Custom shade of green for primary
+      main: "#4CAF50",
     },
     secondary: {
-      main: "#8BC34A", // Custom shade of green for secondary
+      main: "#8BC34A",
     },
-    // Additional shades of green or other colors can be added here
   },
 });
 
-export default function SignIn() {
+export default function SignUp() {
 
   const navigate = useNavigate();
-
- 
-
+  const [snackbar, setSnackbar] = React.useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
 
   const appStyle = {
-    // backgroundImage: `url(${bg})`,
-    backgroundSize: "cover", // Cover the entire page
-    backgroundPosition: "center", // Center the background image
-    maxHeight: "100vh", // Ensure it covers the full viewport height
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    maxHeight: "100vh",
+  };
+
+  const handleSnackbarOpen = (message, severity = "info") => {
+    setSnackbar({
+      open: true,
+      message,
+      severity,
+    });
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbar((prev) => ({ ...prev, open: false }));
   };
 
   const handleSubmit = (event) => {
@@ -99,14 +100,13 @@ export default function SignIn() {
               noValidate
               sx={{ mt: 1 }}
             >
-               <TextField
+              <TextField
                 margin="normal"
                 required
                 fullWidth
                 id="name"
                 label="Full Name"
                 name="name"
-           
                 autoFocus
               />
               <TextField
@@ -117,7 +117,6 @@ export default function SignIn() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-              
               />
               <TextField
                 margin="normal"
@@ -127,10 +126,9 @@ export default function SignIn() {
                 label="Password"
                 type="password"
                 id="password"
-            
               />
 
-<TextField
+              <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -138,7 +136,6 @@ export default function SignIn() {
                 label="Reenter Password"
                 type="password"
                 id="repassword"
-                
               />
 
               <Button
@@ -154,12 +151,12 @@ export default function SignIn() {
                     const repassword = document.getElementById("repassword").value;
 
                     if (password !== repassword) {
-                      alert("Passwords do not match");
+                      handleSnackbarOpen("Passwords do not match", "error");
                       return;
                     }
 
                     if(!email || !password || !username) {
-                      alert("Please fill all fields");
+                      handleSnackbarOpen("Please fill all fields", "error");
                       return;
                     }
                     fetch('http://localhost:5000/api/signup', {
@@ -172,14 +169,15 @@ export default function SignIn() {
                       .then(data => {
                         console.log('Success:', data);
                         if (data.error) {
-                          alert(data.error);
+                          handleSnackbarOpen(data.error, "error");
                         } else {
-                          alert('User created successfully');
-                          navigate('/');
+                          handleSnackbarOpen('User created successfully', "success");
+                          setTimeout(() => navigate('/'), 2000);
                         }
                       })
                       .catch((error) => {
                         console.error('Error:', error);
+                        handleSnackbarOpen('An error occurred', "error");
                       });
 
                   }
@@ -189,27 +187,30 @@ export default function SignIn() {
               </Button>
             
               <Grid container justifyContent="center" alignItems="center">
-              {/* <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid> */}
-         
-              <Grid item>
-            <Button
-                // variant="contained"
-                color="secondary"
-                startIcon={<BuildIcon />}
-                onClick={() =>  navigate('/developer')}
-              > Sign in as Administrator</Button>
-              </Grid>
+                <Grid item>
+                  <Button
+                    color="secondary"
+                    startIcon={<BuildIcon />}
+                    onClick={() =>  navigate('/developer')}
+                  >
+                    Sign in as Administrator
+                  </Button>
+                </Grid>
               </Grid>
             </Box>
-
-            
           </Box>
-          {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
         </Container>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleSnackbarClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </div>
     </ThemeProvider>
   );
