@@ -24,7 +24,7 @@ import BlastLogo from '../assets/images/blast_logo.png';
 import { alpha, useTheme } from '@mui/material/styles';
 import '../App.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 const BlastSearch = () => {
   const theme = useTheme();
