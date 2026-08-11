@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   const fetchDataset = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/data');
+      const response = await axios.get(`${API_BASE_URL}/api/data`);
       setDataset(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
