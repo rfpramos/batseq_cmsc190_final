@@ -52,6 +52,7 @@ const defaultTheme = createTheme({
 export default function SignIn() {
 
   const navigate = useNavigate();
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
  
 
@@ -134,8 +135,9 @@ export default function SignIn() {
                
                 
                   try {
-                    const response = await fetch('http://localhost:5000/api/auth/user', {
+                    const response = await fetch(`${apiBaseUrl}/api/auth/user`, {
                       method: 'POST',
+                      credentials: 'include',
                       headers: {
                         'Content-Type': 'application/json',
                       },
@@ -149,6 +151,9 @@ export default function SignIn() {
                     if (response.status === 200) {
                       localStorage.setItem('userLoggedIn', 'true');
                       localStorage.setItem('email', email);
+                      if (data.user && data.user.role) {
+                        localStorage.setItem('role', data.user.role);
+                      }
                       navigate("/home");
                     } else {
                       const originalColor = button.style.backgroundColor;
@@ -171,7 +176,7 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
-            
+
               <Grid container justifyContent="center" alignItems="center">
               {/* <Grid item xs>
                 <Link href="#" variant="body2">

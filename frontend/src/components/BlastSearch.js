@@ -26,6 +26,7 @@ import '../App.css';
 
 const BlastSearch = () => {
   const theme = useTheme();
+  const isolateCardGradient = 'linear-gradient(45deg, #00e676, #76ff03)';
 
   const [sequence, setSequence] = useState('');
   const [results, setResults] = useState(null);
@@ -683,9 +684,9 @@ const BlastSearch = () => {
                   maxHeight: '70vh',
                   borderRadius: 4,
                   overflow: 'auto',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  boxShadow: '0 20px 48px rgba(15, 23, 42, 0.12)',
+                  // background: isolateCardGradient,
+                  border: '1px solid rgba(22, 101, 52, 0.2)',
+                  boxShadow: '0 20px 48px rgba(22, 101, 52, 0.2)',
                 }}
               >
                 <Table
@@ -701,6 +702,7 @@ const BlastSearch = () => {
                     <TableRow
                       sx={{
                         '& th': {
+                          
                           backgroundColor: 'background.paper',
                           color: 'text.primary',
                         },
@@ -816,6 +818,8 @@ const BlastSearch = () => {
                   p: 4,
                   textAlign: 'center',
                   borderRadius: 3,
+                  background: isolateCardGradient,
+                  color: '#123524',
                 }}
               >
                 <Typography

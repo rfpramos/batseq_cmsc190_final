@@ -565,8 +565,8 @@ export default function Dashboard() {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    bgColor: "linear-gradient(45deg, #00e676, #76ff03)",
-
+                    background: "linear-gradient(45deg, #005029, #71d122)",
+                    color: "white",
                     flexGrow: 1,
                     p: 1,
                   }}
