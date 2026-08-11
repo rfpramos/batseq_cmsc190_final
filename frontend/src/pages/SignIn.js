@@ -52,7 +52,19 @@ const defaultTheme = createTheme({
 export default function SignIn() {
 
   const navigate = useNavigate();
-  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
+  const getApiBaseUrl = () => {
+    if (process.env.REACT_APP_API_BASE_URL) {
+      return process.env.REACT_APP_API_BASE_URL;
+    }
+
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+      return '';
+    }
+
+    return 'http://localhost:8080';
+  };
+
+  const apiBaseUrl = getApiBaseUrl();
 
  
 
