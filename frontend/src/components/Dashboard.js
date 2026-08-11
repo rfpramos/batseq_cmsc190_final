@@ -40,7 +40,19 @@ import { gray } from "../getLPTheme";
 
 import InfoIcon from "@mui/icons-material/Info";
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const getApiBaseUrl = () => {
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return '';
+  }
+
+  return 'http://localhost:8080';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 import ShareIcon from "@mui/icons-material/Share";
 
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -88,16 +100,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-<<<<<<< HEAD
-    axios
-      .get(`${API_BASE_URL}/api/data`)
-      .then((response) => {
-        setDataset(response.data);
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-=======
     fetchDataset();
->>>>>>> main
   }, []);
 
   const fetchSharedData = async (email) => {
@@ -236,18 +239,9 @@ export default function Dashboard() {
 
   const handleAddSubmit = () => {
     axios
-<<<<<<< HEAD
       .post(`${API_BASE_URL}/api/data`, newIsolate)
-      .then((response) => {
-        setDataset([...dataset, response.data]);
-
-=======
-      .post("http://localhost:5000/api/data", newIsolate)
+      .then(() => fetchDataset())
       .then(() => {
-        return fetchDataset();
-      })
-      .then(() => {
->>>>>>> main
         handleAddClose();
       })
       .catch((error) => console.error("Error adding data:", error));

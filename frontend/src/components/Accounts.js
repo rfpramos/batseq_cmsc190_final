@@ -26,35 +26,30 @@ import LockIcon from '@mui/icons-material/Lock';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import EmailIcon from '@mui/icons-material/Email';
 
-<<<<<<< HEAD
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const getApiBaseUrl = () => {
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
 
-export default function Testimonials() {
-=======
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return '';
+  }
+
+  return 'http://localhost:8080';
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
 const formatDateTime = (value) => {
   if (!value) {
     return 'Unavailable';
   }
->>>>>>> main
 
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return String(value);
   }
 
-<<<<<<< HEAD
-  const restrictUser = (email) => {
-    axios.post(`${API_BASE_URL}/api/data/restrictUser`, { email })
-      .then(response => {
-        console.log(response.data.message);
-        // Optionally, update the users state to reflect the change
-        setUsers(users.map(user => user.email === email ? { ...user, approved: 0 } : user));
-      })
-      .catch(error => {
-        console.error('Error restricting user:', error);
-      });
-  };
-=======
   return new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'short',
@@ -63,7 +58,6 @@ const formatDateTime = (value) => {
     minute: '2-digit',
   }).format(date);
 };
->>>>>>> main
 
 const roleMeta = {
   admin: {
@@ -78,28 +72,6 @@ const roleMeta = {
   },
 };
 
-<<<<<<< HEAD
-  const approveUser = (email) => {
-    axios.post(`${API_BASE_URL}/api/data/approveUser`, { email })
-
-      .then(response => {
-        console.log(response.data.message);
-        // Optionally, update the users state to reflect the change
-        setUsers(users.map(user => user.email === email ? { ...user, approved: 1 } : user));
-      })  
-      .catch(error => {
-        console.error('Error approving user:', error);
-      });
-  };
-  
-  
-const [users, setUsers] = useState([]);
-
-useEffect(() => {
-  axios
-    .get(`${API_BASE_URL}/api/data/getuser`)
-    .then((response) => {
-=======
 export default function Accounts() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -107,8 +79,7 @@ export default function Accounts() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/data/getuser');
->>>>>>> main
+      const response = await axios.get(`${API_BASE_URL}/api/data/getuser`);
       setUsers(response.data);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -134,7 +105,7 @@ export default function Accounts() {
   const updateApprovalState = async (email, approved) => {
     const endpoint = approved ? '/api/data/approveUser' : '/api/data/restrictUser';
     try {
-      await axios.post(`http://localhost:5000${endpoint}`, { email });
+      await axios.post(`${API_BASE_URL}${endpoint}`, { email });
       setUsers((currentUsers) =>
         currentUsers.map((user) =>
           user.email === email ? { ...user, approved: approved ? 1 : 0 } : user
