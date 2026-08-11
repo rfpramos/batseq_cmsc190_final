@@ -135,12 +135,7 @@ export default function SignIn() {
                
                 
                   try {
-<<<<<<< HEAD
                     const response = await fetch(`${API_BASE_URL}/api/auth/user`, {
-=======
-                    const response = await fetch(`${apiBaseUrl}/api/auth/user`, {
->>>>>>> main
-                      method: 'POST',
                       credentials: 'include',
                       headers: {
                         'Content-Type': 'application/json',

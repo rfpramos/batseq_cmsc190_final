@@ -23,8 +23,19 @@ import BuildIcon from "@mui/icons-material/Build";
 import { brand } from "../getLPTheme";
 import { useNavigate } from 'react-router-dom';
 
-<<<<<<< HEAD
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const getApiBaseUrl = () => {
+  if (process.env.REACT_APP_API_URL) {
+    return process.env.REACT_APP_API_URL;
+  }
+
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+    return '';
+  }
+
+  return 'http://localhost:8080';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // function Copyright(props) {
 //   return (
@@ -41,8 +52,6 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 
-=======
->>>>>>> main
 const defaultTheme = createTheme({
   palette: {
     primary: {
