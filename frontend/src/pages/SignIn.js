@@ -52,6 +52,7 @@ const defaultTheme = createTheme({
 export default function SignIn() {
 
   const navigate = useNavigate();
+  const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
  
 
@@ -126,15 +127,21 @@ export default function SignIn() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2, backgroundColor: brand[800], color: "#fff"} }
 
-                onClick={async () => {
+                onClick={async (event) => {
+                  const button = event.currentTarget;
 
                   const email = document.getElementById("email").value;
                   const password = document.getElementById("password").value;
                
                 
                   try {
+<<<<<<< HEAD
                     const response = await fetch(`${API_BASE_URL}/api/auth/user`, {
+=======
+                    const response = await fetch(`${apiBaseUrl}/api/auth/user`, {
+>>>>>>> main
                       method: 'POST',
+                      credentials: 'include',
                       headers: {
                         'Content-Type': 'application/json',
                       },
@@ -148,26 +155,21 @@ export default function SignIn() {
                     if (response.status === 200) {
                       localStorage.setItem('userLoggedIn', 'true');
                       localStorage.setItem('email', email);
+                      if (data.user && data.user.role) {
+                        localStorage.setItem('role', data.user.role);
+                      }
                       navigate("/home");
                     } else {
-                      const button = document.getElementById("submit");
-                      // Save the original color
                       const originalColor = button.style.backgroundColor;
-                      // Change the color of the button
-                      button.style.backgroundColor = "red"; // Change 'red' to your desired color
-                      // Change the color back to the original after 3 seconds
+                      button.style.backgroundColor = "red";
                       setTimeout(() => {
                         button.style.backgroundColor = originalColor;
                       }, 1000);
                     }
                   } catch (error) {
                     console.error('Login failed:', error);
-                    const button = document.getElementById("submit");
-                    // Save the original color
                     const originalColor = button.style.backgroundColor;
-                    // Change the color of the button
-                    button.style.backgroundColor = "red"; // Change 'red' to your desired color
-                    // Change the color back to the original after 3 seconds
+                    button.style.backgroundColor = "red";
                     setTimeout(() => {
                       button.style.backgroundColor = originalColor;
                     }, 1000);
@@ -178,7 +180,7 @@ export default function SignIn() {
               >
                 Sign In
               </Button>
-            
+
               <Grid container justifyContent="center" alignItems="center">
               {/* <Grid item xs>
                 <Link href="#" variant="body2">
