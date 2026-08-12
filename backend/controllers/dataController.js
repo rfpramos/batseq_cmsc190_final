@@ -374,7 +374,7 @@ exports.checkIfAdmin = (req, res, next) => {
     return res.status(400).json({ error: 'Valid email is required' });
   }
 
-  const query = 'SELECT role FROM users WHERE email = ? and role="admin" LIMIT 1';
+  const query = "SELECT role FROM users WHERE email = ? and role='admin' LIMIT 1";
   connection.query(query, [email.trim().toLowerCase()], (err, results) => {
     if (err) {
       console.error('Error checking if admin:', err);
@@ -476,7 +476,7 @@ exports.authenticateUser = (req, res) => {
     return res.status(400).json({ error: 'Valid email and password are required' });
   }
 
-  const query = 'SELECT id, username, password, email, role, approved, created_at, updated_at FROM users WHERE email = ? AND role="user" AND approved=1 LIMIT 1';
+  const query = "SELECT id, username, password, email, role, approved, created_at, updated_at FROM users WHERE email = ? AND role='user' AND approved=1 LIMIT 1";
   connection.query(query, [email.trim().toLowerCase()], (err, results) => {
     if (err) {
       console.error('Error authenticating user:', err);
@@ -546,7 +546,7 @@ exports.authenticateAdmin = (req, res) => {
     return res.status(400).json({ error: 'Valid email and password are required' });
   }
 
-  const query = 'SELECT id, username, password, email, role, approved, created_at, updated_at FROM users WHERE email = ? AND role = "admin" LIMIT 1';
+  const query = "SELECT id, username, password, email, role, approved, created_at, updated_at FROM users WHERE email = ? AND role = 'admin' LIMIT 1";
   connection.query(query, [normalizeEmail(email)], (err, results) => {
     if (err) {
       console.error('Error authenticating user:', err);
