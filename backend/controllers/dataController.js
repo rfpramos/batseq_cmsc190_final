@@ -896,6 +896,12 @@ exports.blastn = (req, res) => {
       if (error) {
         console.error('Error executing blastn:', error);
 
+        if (error.code === 'ENOENT') {
+          return res.status(500).json({
+            error: 'BLAST executable not found. Install ncbi-blast+ and ensure blastn is in PATH.',
+          });
+        }
+
         return res.status(500).json({
           error: error.message || 'BLAST execution failed',
         });
