@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SignIn from './pages/SignIn';
 import LandingPage from './pages/LandingPage';
+import DemoPage from './pages/DemoPage';
 import DeveloperMode from './pages/DeveloperMode';
 import SignUp from './pages/SignUp';
 import AdminLanding from './pages/AdminLanding';
@@ -27,7 +28,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<SignIn />} />
         <Route path="/home" element={<LandingPage />} />
-        <Route path="/demo" element={<LandingPage />} />
+        <Route path="/demo" element={<DemoPage />} />
         <Route path="/developer" element={<DeveloperMode />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin" element={<AdminLanding />} />

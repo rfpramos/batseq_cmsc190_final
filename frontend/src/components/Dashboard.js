@@ -58,7 +58,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DeleteIcon from "@mui/icons-material/Delete"; // Corrected import path
 
-export default function Dashboard() {
+export default function Dashboard({ isDemo = false }) {
   const [dataset, setDataset] = useState([]);
   const [openAdd, setOpenAdd] = useState(false);
   const [newIsolate, setNewIsolate] = useState({
@@ -406,9 +406,11 @@ export default function Dashboard() {
           pellets collected at different cave sites in CALABARZON.
         </Typography>
       </Box>
-      <Button variant="contained" onClick={handleAddOpen}>
-        Add New Isolate
-      </Button>
+      {!isDemo && (
+        <Button variant="contained" onClick={handleAddOpen}>
+          Add New Isolate
+        </Button>
+      )}
       <Dialog open={openAdd} onClose={handleAddClose}>
         <DialogTitle>Add New Isolate</DialogTitle>
         <DialogContent>

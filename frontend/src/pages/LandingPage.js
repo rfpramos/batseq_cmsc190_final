@@ -65,7 +65,7 @@ ToggleCustomTheme.propTypes = {
   toggleCustomTheme: PropTypes.func.isRequired,
 };
 
-export default function LandingPage() {
+export default function LandingPage({ isDemo = false }) {
   const [mode, setMode] = React.useState('light');
   const [showCustomTheme, setShowCustomTheme] = React.useState(true);
   const LPtheme = createTheme(getLPTheme(mode));
@@ -91,7 +91,7 @@ export default function LandingPage() {
         {localStorage.getItem('isAdmin') ? <Testimonials /> : <BlastSearch />}
         <Divider />
         
-        <Dashboard />
+        <Dashboard isDemo={isDemo} />
     
         <Divider />
 {/*         
